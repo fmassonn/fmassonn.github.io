@@ -19,6 +19,8 @@ Les données brutes servant à produire les figures ci-dessus sont téléchargea
 
 **[Données agrégées à l'échelle journalière (moyenne, minimum, maximum) (Clic droit + Enregistrer)](./output/dailyStatistics_T2m_Bruxelles.csv)**
 
+Le script (Python3) qui produit ces données est disponible [ici](./scripts/analysis_T2m.py)
+
 ## Références
 Hersbach, H., Bell, B., Berrisford, P., Hirahara, S., Horányi, A., Muñoz‐Sabater, J., Nicolas, J., Peubey, C., Radu, R., Schepers, D., Simmons, A., Soci, C., Abdalla, S., Abellan, X., Balsamo, G., Bechtold, P., Biavati, G., Bidlot, J., Bonavita, M., … Thépaut, J.-N. (2020). The ERA5 Global Reanalysis. Quarterly Journal of the Royal Meteorological Society, https://doi.org/10.1002/qj.3803
 
