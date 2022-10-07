@@ -7,7 +7,8 @@ set -x
 module purge
 module load releases/2020b
 module load ELIC_Python/1-foss-2020b
-#python3 analysis_T2m.py
+
+python3 analysis_T2m.py
 
 
 
