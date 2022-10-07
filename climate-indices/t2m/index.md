@@ -1,3 +1,7 @@
+<p align="center">
+<img src="./figs/last_1yr.png" width="200">
+</p>
+
 ## Bienvenue!
 Cette page reprend les statistiques de température de l'air à 2 mètres telles que reconstruites par la **[réanalyse atmosphérique ERA5](https://rmets.onlinelibrary.wiley.com/doi/10.1002/qj.3803)** (Hersbach et al., 2020) sur une zone de ~30 km x ~30 km située au-dessus de Bruxelles. 
 
@@ -6,12 +10,10 @@ Cette page reprend les statistiques de température de l'air à 2 mètres telles
 
 Cette page est actualisée une fois par jour.
 
+Les données brutes servant à produire les figures ci-après sont données sous forme de fichier CSV (lisible par les logiciels de tableur) ci-dessous.
 
-Pour tout question: contacter **[François Massonnet](mailto:francois.massonnet@uclouvain.be)**
+Pour tout question ou suggestion d'amélioration, contacter **[François Massonnet](mailto:francois.massonnet@uclouvain.be)**
 
-<p align="center">
-<img src="./figs/last_1yr.png" >
-</p>
 
 ## Références
 Hersbach, H., Bell, B., Berrisford, P., Hirahara, S., Horányi, A., Muñoz‐Sabater, J., Nicolas, J., Peubey, C., Radu, R., Schepers, D., Simmons, A., Soci, C., Abdalla, S., Abellan, X., Balsamo, G., Bechtold, P., Biavati, G., Bidlot, J., Bonavita, M., … Thépaut, J.-N. (2020). The ERA5 Global Reanalysis. Quarterly Journal of the Royal Meteorological Society, n/a(n/a). https://doi.org/10.1002/qj.3803
