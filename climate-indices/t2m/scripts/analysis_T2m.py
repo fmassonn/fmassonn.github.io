@@ -336,7 +336,7 @@ plt.close(fig)
 
 
 # Plot previous 365 days
-widthYears = [1, 10]# 50]# endYear - startYear + 1]  # Nb of years to show
+widthYears = [1, 20]# 50]# endYear - startYear + 1]  # Nb of years to show
 for w in widthYears:
 	fig, ax = plt.subplots(figsize = (5.1 * w, 3))
 
