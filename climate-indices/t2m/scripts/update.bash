@@ -15,7 +15,7 @@ do
 	echo $year
 	echo "<h1> $year </h1>" >> ../allYears.md
 	echo "<img src=\"./figs/T2m_Bruxelles_$year.png\" width=\"1200\">" >> ../allYears.md
-	echo "<br></br>" >> ../allYears.md
+	echo "<br>" >> ../allYears.md
 done
 
 echo "</p>" >> ../allYears.md
