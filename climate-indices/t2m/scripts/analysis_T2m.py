@@ -336,7 +336,7 @@ plt.close(fig)
 
 
 # Plot previous 365 days
-widthYears = [1, 20]# 50]# endYear - startYear + 1]  # Nb of years to show
+widthYears = [1, 30]# 50]# endYear - startYear + 1]  # Nb of years to show
 for w in widthYears:
 	fig, ax = plt.subplots(figsize = (5.1 * w, 3))
 
@@ -364,7 +364,7 @@ for w in widthYears:
 	ax.set_title("Température journalière moyenne de l'air à 2 m\n" + locationName + " (données ERA5)")
 	ax.legend()
 	fig.tight_layout()
-	fig.savefig("../figs/last_" + str(w) + "yr.png", dpi = 200)
+	fig.savefig("../figs/last_" + str(w) + "yr.png", dpi = 300)
 	plt.close(fig)
 
 
