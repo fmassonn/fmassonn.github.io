@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#python3 analysis_T2m.py
+python3 analysis_T2m.py
 
 
-#git add ../figs/T2m_Bruxelles_*.png
+git add ../figs/T2m_Bruxelles_*.png
 
 # Create page with all years
 thisYear=`date +"%Y"`
@@ -21,6 +21,6 @@ done
 echo "</p>" >> ../allYears.md
 
 
-#git commit -m "Daily update"
+git commit -m "Daily update"
 
-#git push origin main
+git push origin main

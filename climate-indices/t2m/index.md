@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="./figs/T2m_Bruxelles_last365.png" width="1200">
+<img src="./figs/T2m_Bruxelles_last365d.png" width="1200">
 </p>
 
 _Pour la même figure sur les  années précédentes, voir [ici](./allYears.md)_

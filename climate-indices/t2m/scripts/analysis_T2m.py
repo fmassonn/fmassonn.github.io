@@ -363,7 +363,7 @@ ax.set_ylabel("$^\circ$ C")
 ax.set_title("Température journalière moyenne de l'air à 2 m\n" + locationName + " (données ERA5)")
 ax.legend()
 fig.tight_layout()
-fig.savefig("../figs/T2M_" + locationName + "_" + "last365d.png", dpi = 300)
+fig.savefig("../figs/T2m_" + locationName + "_" + "last365d.png", dpi = 300)
 plt.close(fig)
 
 
