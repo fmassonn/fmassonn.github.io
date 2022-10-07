@@ -1,5 +1,5 @@
 <p align="center">
-<img src="./figs/last_1yr.png" width="200">
+<img src="./figs/last_1yr.png" width="1200">
 </p>
 
 ## Bienvenue!
