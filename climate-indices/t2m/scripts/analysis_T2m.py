@@ -335,37 +335,67 @@ fig.savefig("../figs/check4.png")
 plt.close(fig)
 
 
-# Plot previous 365 days
-widthYears = [1, 30]# 50]# endYear - startYear + 1]  # Nb of years to show
-for w in widthYears:
-	fig, ax = plt.subplots(figsize = (5.1 * w, 3))
+# Plot previous 365 days and previous years
 
-	# Tile the cycle
+fig, ax = plt.subplots(figsize = (7, 4))
+
+# Tile the cycle
+# Subset the data
+ax.plot(datesDay, cycleSmoothedTiled, lw = 1, color = "k", ls = "--", label = "Moyenne climatologique (" + str(yearbc) + "-" + str(yearec) + ")")
+
+#ax.plot(dateOneYear, cycle_smoothed, "k--")
+anomalies = np.array(dataDayMean) - np.array(cycleSmoothedTiled)
+for j, d in enumerate(datesDay):
+	if d > today - timedelta(days = 365):
+		xmin, xmax = -10, 10
+		color = plt.cm.RdBu_r(int((anomalies[j]- xmin) * 255 / (xmax - xmin)))[:3]
+		ax.bar(datesDay[j], anomalies[j], bottom = cycleSmoothedTiled[j], color = color, lw = 2, width = 1.0)
+locator = mdates.MonthLocator()  # every month
+ax.grid()
+ax.xaxis.set_major_locator(locator)
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b %y'))
+ax.xaxis.set_tick_params(rotation=45)
+ax.set_axisbelow(True)
+ax.set_xlim(today - timedelta(days = 365), today + timedelta(days = 10))
+ax.set_ylim(-10, 35)
+ax.plot((-1e9, 1e9), (0, 0), color = "black")
+ax.set_ylabel("$^\circ$ C")
+ax.set_title("Température journalière moyenne de l'air à 2 m\n" + locationName + " (données ERA5)")
+ax.legend()
+fig.tight_layout()
+fig.savefig("../figs/T2M_" + locationName + "_" + "last365d.png", dpi = 300)
+plt.close(fig)
+
+
+# Repeat for all years before this year
+for year in np.arange(startYear, endYear):
+	print(year)
+	fig, ax = plt.subplots(figsize = (7, 4))
+
 	# Subset the data
-	#ax.plot(datesDay, dataDayMean, lw = 1, color = "k")
 	ax.plot(datesDay, cycleSmoothedTiled, lw = 1, color = "k", ls = "--", label = "Moyenne climatologique (" + str(yearbc) + "-" + str(yearec) + ")")
 
 	#ax.plot(dateOneYear, cycle_smoothed, "k--")
 	anomalies = np.array(dataDayMean) - np.array(cycleSmoothedTiled)
 	for j, d in enumerate(datesDay):
-		if d > today - timedelta(days = w * 365):
+		if d >= datetime(year, 1, 1) and d <= datetime(year, 12, 31):
 			xmin, xmax = -10, 10
 			color = plt.cm.RdBu_r(int((anomalies[j]- xmin) * 255 / (xmax - xmin)))[:3]
 			ax.bar(datesDay[j], anomalies[j], bottom = cycleSmoothedTiled[j], color = color, lw = 2, width = 1.0)
 	locator = mdates.MonthLocator()  # every month
 	ax.grid()
 	ax.xaxis.set_major_locator(locator)
+	ax.set_xlim(datetime(year - 1, 12, 31), datetime(year + 1, 1, 1))
+	ax.set_ylim(-10, 35)
 	ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b %y'))
 	ax.xaxis.set_tick_params(rotation=45)
 	ax.set_axisbelow(True)
-	ax.set_xlim(today - timedelta(days = w * 365), today + timedelta(days = 10))
 	ax.plot((-1e9, 1e9), (0, 0), color = "black")
 	ax.set_ylabel("$^\circ$ C")
-	ax.set_title("Température journalière moyenne de l'air à 2 m\n" + locationName + " (données ERA5)")
+	ax.set_title("Température journalière moyenne de l'air à 2 m\n" + "Année " + str(year) + ", " + locationName + " (données ERA5)")
 	ax.legend()
 	fig.tight_layout()
-	fig.savefig("../figs/last_" + str(w) + "yr.png", dpi = 300)
+	fig.savefig("../figs/T2m_" + locationName + "_" + str(year) + ".png", dpi = 300)
 	plt.close(fig)
-
 
 
