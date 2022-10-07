@@ -1,15 +1,14 @@
-<h1> TEST </h1>
 
 <p align="center">
 <img src="./figs/last_1yr.png" width="1200">
 </p>
 
-## Bienvenue!
+## Bienvenue
 Cette page reprend les statistiques de température de l'air à 2 mètres telles que reconstruites par la **[réanalyse atmosphérique ERA5](https://rmets.onlinelibrary.wiley.com/doi/10.1002/qj.3803)** (Hersbach et al., 2020) sur une zone de ~30 km x ~30 km située au-dessus de Bruxelles. Ces données sont accessibles publiquement via le [_Climate Data Store_](https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview) du programme Copernicus d'observation de la Terre de l'Union Européenne.
 
 **Clause de non-responsabilité**: ces données, issues d'un modèle numérique atmosphérique contraint par des observations, n'ont pas pour vocation de remplacer des données issues de stations météorologiques. Elles sont cependant suffisantes pour apprécier la variabilité saisonnière de la température, la fréquence, la durée, ou l'intensité de récentes vagues de chaleur ou de froid, et les tendances multi-décennales.
 
-Cette page est actualisée une fois par jour automatiquement.
+Cette page est actualisée une fois par jour, automatiquement.
 
 Les données brutes servant à produire les figures ci-dessus sont téléchargeables ci-dessous, sous la forme de fichiers CSV lisibles par des logiciels de tableur classiques.
 
