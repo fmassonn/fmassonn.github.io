@@ -2,7 +2,7 @@
 
 set -o nounset
 set -o errexit
-set -x
+#set -x
 
 module purge
 module load releases/2020b

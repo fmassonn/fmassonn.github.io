@@ -27,5 +27,5 @@ Le script (Python3) qui produit ces données est disponible [ici](./scripts/anal
 Hersbach, H., Bell, B., Berrisford, P., Hirahara, S., Horányi, A., Muñoz‐Sabater, J., Nicolas, J., Peubey, C., Radu, R., Schepers, D., Simmons, A., Soci, C., Abdalla, S., Abellan, X., Balsamo, G., Bechtold, P., Biavati, G., Bidlot, J., Bonavita, M., … Thépaut, J.-N. (2020). The ERA5 Global Reanalysis. Quarterly Journal of the Royal Meteorological Society, https://doi.org/10.1002/qj.3803
 
 ## Contact
-Pour tout question ou suggestion d'amélioration, contacter **[François Massonnet](mailto:francois.massonnet@uclouvain.be)**
+Pour toute question ou suggestion d'amélioration, contacter **[François Massonnet](mailto:francois.massonnet@uclouvain.be)**
 
