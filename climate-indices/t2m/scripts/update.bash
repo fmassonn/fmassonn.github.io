@@ -3,10 +3,12 @@
 set -o nounset
 set -o errexit
 #set -x
-
-module purge
-module load releases/2020b
-module load ELIC_Python/1-foss-2020b
+if [[ $HOSTNAME == "aurora" ]]
+then
+	module purge
+	module load releases/2020b
+	module load ELIC_Python/1-foss-2020b
+fi
 
 python3 analysis_T2m.py
 
