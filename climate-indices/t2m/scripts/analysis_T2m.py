@@ -361,6 +361,10 @@ ax.set_ylim(-10, 35)
 ax.plot((-1e9, 1e9), (0, 0), color = "black")
 ax.set_ylabel("$^\circ$ C")
 ax.set_title("Température journalière moyenne de l'air à 2 m\n" + locationName + " (données ERA5)")
+ax.text(ax.get_xlim()[1], ax.get_ylim()[0],  "\nDernière donnée: " + str(datesDay[-1].strftime("%d %b %y"))  +
+            ". Graphe: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") +
+            " | @FMassonnet",
+            rotation =90, ha = "left", va = "bottom", fontsize = 4)
 ax.legend()
 fig.tight_layout()
 fig.savefig("../figs/T2m_" + locationName + "_" + "last365d.png", dpi = 300)
