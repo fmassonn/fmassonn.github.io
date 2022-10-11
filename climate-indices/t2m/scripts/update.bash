@@ -31,6 +31,8 @@ done
 echo "</p>" >> $outFile
 
 git add ../figs/T2m_Bruxelles_*.png
+git add ../figs/T2m_MinMax_Bruxelles_last365d.png
+git add ../output/dailyStatistics_T2m_Bruxelles.csv
 
 git commit -m "Daily update"
 
