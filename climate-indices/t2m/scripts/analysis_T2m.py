@@ -46,7 +46,8 @@ def downloadERA5(year, listMonths, listDays, listTime, domainArea, outFile = "..
 # Data with location inforlation
 dictLocations = { \
 		# Location name Lat max     Lon min  Lat min  Lon max
-		"Bruxelles":	[50.8,      4.2,     50.7,    4.3],
+		"Bruxelles":	 [50.8,      4.2,     50.7,    4.3],
+		"Cluny"    :     [46.5,      4.6,     46.4,    4.7],
 		}
                     
 # ==========================                    
@@ -60,7 +61,7 @@ startDate    = datetime(1959, 1, 1)
 startYear    = startDate.year
 
 # Domain definition. Fetched from the above dictionary
-locationName = "Bruxelles"
+locationName = "Cluny"
 
 try:
 	domainArea = dictLocations[locationName]

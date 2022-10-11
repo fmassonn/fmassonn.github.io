@@ -1,2 +1,3 @@
 climate-indices/t2m/figs/outlook*png
 climate-indices/t2m/figs/check*png
+climate-indices/t2m/data/*.nc
