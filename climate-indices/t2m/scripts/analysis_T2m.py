@@ -489,79 +489,79 @@ plt.close(fig)
 
 # Repeat for all years before this year
 # starting only at year startYear + 1 since no max/min for first year
-for year in np.arange(startYear + 1, endYear):
-	print("year")
-	fig, ax = plt.subplots(figsize = (7, 4))
-    
-	doLegend = True
-	doLegendRecordMax = True
-	doLegendRecordMin = True
-
-	for j, d in enumerate(datesDay):
-		if d >= datetime(year, 1, 1) and d <= datetime(year, 12, 31):
-			if doLegend:
-			    legendMax="Maximum journalier à ce jour"
-			    legendMin="Minimum journalier à ce jour"
-			    legendRange="Min-max du jour"
-
-			    
-			    doLegend = False
-			else:
-			    legendMax = legendMin = legendRange = legendRange = legendRecordMax = legendRecordMin = None
-			    
-			    
-			xmin, xmax = 0, 50
-			color = plt.cm.OrRd(int((maxToDate[j]- xmin) * 255 / (xmax - xmin)))[:3]
-			ax.bar(datesDay[j], maxToDate[j] - cycleSmoothedTiled[j], bottom = cycleSmoothedTiled[j], color = color, lw = 2, width = 1, alpha = 0.9, label = legendMax)
-			
-			xmin, xmax = -10, 20
-			color = plt.cm.GnBu_r(int((minToDate[j]- xmin) * 255 / (xmax - xmin)))[:3]
-			ax.bar(datesDay[j], cycleSmoothedTiled[j] - minToDate[j], bottom = minToDate[j] , color = color, lw = 2, width = 1, alpha = 0.9, label = legendMin)
-			
-			ax.bar(datesDay[j], dataDayMax[j] - dataDayMin[j], bottom = dataDayMin[j] , color = [0.2, 0.2, 0.2], lw = 1, width = 0.8, alpha = 1, label = legendRange)
-			
-			if dataDayMax[j] > maxToDate[j]:
-			    if doLegendRecordMax:
-				legendRecordMax = "Record max"
-				doLegendRecordMax = False
-			    else:
-				legendRecordMax = None
-			    ax.scatter(datesDay[j], dataDayMax[j], 10, marker = "*", color = "r", lw = 0, zorder = 1000, label = legendRecordMax)
-
-			if dataDayMin[j] < minToDate[j]:
-			    if doLegendRecordMin:
-				legendRecordMin = "Record min"
-				doLegendRecordMin = False
-			    else:
-				legendRecordMin = None
-			    ax.scatter(datesDay[j], dataDayMin[j], 10, marker = "*", color = "b", lw = 0, zorder = 1000, label = legendRecordMin)
-			    
-
-			    
-			
-	#ax.plot(datesDay, dataDayMax, lw = 0.5, color = "k")
-	#ax.plot(datesDay, dataDayMin, lw = 0.5, color = "k")
-
-	ax.plot(datesDay, cycleSmoothedTiled, lw = 0.5, color = "k", ls = "-", label = "Moyenne climatologique journalière (" + str(yearbc) + "-" + str(yearec) + ")")
-	locator = mdates.MonthLocator()  # every month
-	ax.grid()
-	ax.xaxis.set_major_locator(locator)
-	ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b %y'))
-	ax.xaxis.set_tick_params(rotation=45)
-	ax.set_axisbelow(True)
-	ax.set_xlim(datetime(year - 1, 12, 31), datetime(year + 1, 1, 1))
-	ax.set_ylim(-25, 40)
-	ax.plot((-1e9, 1e9), (0, 0), color = "black")
-	ax.set_ylabel("$^\circ$ C")
-	ax.set_title("Températures minimales et maximales journalières de l'air à 2 m\n" +  "Année " + str(year) + ", "locationName + " (données ERA5)")
-	ax.text(ax.get_xlim()[1], ax.get_ylim()[0],  "\nDernière donnée: " + str(datesDay[-1].strftime("%d %b %y"))  +
-		    ". Graphe: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") +
-		    " | @FMassonnet",
-		    rotation =90, ha = "left", va = "bottom", fontsize = 4)
-	ax.legend(fontsize = 8)
-	fig.tight_layout()
-	fig.savefig("../figs/T2m_MinMax" + locationName + "_" + str(year) + ".png", dpi = 300)
-	plt.close(fig)
-
-
-
+#for year in np.arange(startYear + 1, endYear):
+#	print("year")
+#	fig, ax = plt.subplots(figsize = (7, 4))
+#    
+#	doLegend = True
+#	doLegendRecordMax = True
+#	doLegendRecordMin = True
+#
+#	for j, d in enumerate(datesDay):
+#		if d >= datetime(year, 1, 1) and d <= datetime(year, 12, 31):
+#			if doLegend:
+#			    legendMax="Maximum journalier à ce jour"
+#			    legendMin="Minimum journalier à ce jour"
+#			    legendRange="Min-max du jour"
+#
+#			    
+#			    doLegend = False
+#			else:
+#			    legendMax = legendMin = legendRange = legendRange = legendRecordMax = legendRecordMin = None
+#			    
+#			    
+#			xmin, xmax = 0, 50
+#			color = plt.cm.OrRd(int((maxToDate[j]- xmin) * 255 / (xmax - xmin)))[:3]
+#			ax.bar(datesDay[j], maxToDate[j] - cycleSmoothedTiled[j], bottom = cycleSmoothedTiled[j], color = color, lw = 2, width = 1, alpha = 0.9, label = legendMax)
+#			
+#			xmin, xmax = -10, 20
+#			color = plt.cm.GnBu_r(int((minToDate[j]- xmin) * 255 / (xmax - xmin)))[:3]
+#			ax.bar(datesDay[j], cycleSmoothedTiled[j] - minToDate[j], bottom = minToDate[j] , color = color, lw = 2, width = 1, alpha = 0.9, label = legendMin)
+#			
+#			ax.bar(datesDay[j], dataDayMax[j] - dataDayMin[j], bottom = dataDayMin[j] , color = [0.2, 0.2, 0.2], lw = 1, width = 0.8, alpha = 1, label = legendRange)
+#			
+#			if dataDayMax[j] > maxToDate[j]:
+#			    if doLegendRecordMax:
+#				legendRecordMax = "Record max"
+#				doLegendRecordMax = False
+#			    else:
+#				legendRecordMax = None
+#			    ax.scatter(datesDay[j], dataDayMax[j], 10, marker = "*", color = "r", lw = 0, zorder = 1000, label = legendRecordMax)
+#
+#			if dataDayMin[j] < minToDate[j]:
+#			    if doLegendRecordMin:
+#				legendRecordMin = "Record min"
+#				doLegendRecordMin = False
+#			    else:
+#				legendRecordMin = None
+#			    ax.scatter(datesDay[j], dataDayMin[j], 10, marker = "*", color = "b", lw = 0, zorder = 1000, label = legendRecordMin)
+#			    
+#
+#			    
+#			
+#	#ax.plot(datesDay, dataDayMax, lw = 0.5, color = "k")
+#	#ax.plot(datesDay, dataDayMin, lw = 0.5, color = "k")
+#
+#	ax.plot(datesDay, cycleSmoothedTiled, lw = 0.5, color = "k", ls = "-", label = "Moyenne climatologique journalière (" + str(yearbc) + "-" + str(yearec) + ")")
+#	locator = mdates.MonthLocator()  # every month
+#	ax.grid()
+#	ax.xaxis.set_major_locator(locator)
+#	ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b %y'))
+#	ax.xaxis.set_tick_params(rotation=45)
+#	ax.set_axisbelow(True)
+#	ax.set_xlim(datetime(year - 1, 12, 31), datetime(year + 1, 1, 1))
+#	ax.set_ylim(-25, 40)
+#	ax.plot((-1e9, 1e9), (0, 0), color = "black")
+#	ax.set_ylabel("$^\circ$ C")
+#	ax.set_title("Températures minimales et maximales journalières de l'air à 2 m\n" +  "Année " + str(year) + ", "locationName + " (données ERA5)")
+#	ax.text(ax.get_xlim()[1], ax.get_ylim()[0],  "\nDernière donnée: " + str(datesDay[-1].strftime("%d %b %y"))  +
+#		    ". Graphe: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") +
+#		    " | @FMassonnet",
+#		    rotation =90, ha = "left", va = "bottom", fontsize = 4)
+#	ax.legend(fontsize = 8)
+#	fig.tight_layout()
+#	fig.savefig("../figs/T2m_MinMax" + locationName + "_" + str(year) + ".png", dpi = 300)
+#	plt.close(fig)
+#
+#
+#
