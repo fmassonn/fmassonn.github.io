@@ -347,7 +347,7 @@ ax.plot(datesDay, cycleSmoothedTiled, lw = 1, color = "k", ls = "--", label = "M
 #ax.plot(dateOneYear, cycle_smoothed, "k--")
 anomalies = np.array(dataDayMean) - np.array(cycleSmoothedTiled)
 for j, d in enumerate(datesDay):
-	if d > today - timedelta(days = 365):
+	if d > today - timedelta(days = 365 + lagERA5):
 		xmin, xmax = -10, 10
 		color = plt.cm.RdBu_r(int((anomalies[j]- xmin) * 255 / (xmax - xmin)))[:3]
 		ax.bar(datesDay[j], anomalies[j], bottom = cycleSmoothedTiled[j], color = color, lw = 2, width = 1.0)
@@ -357,7 +357,7 @@ ax.xaxis.set_major_locator(locator)
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b %y'))
 ax.xaxis.set_tick_params(rotation=45)
 ax.set_axisbelow(True)
-ax.set_xlim(today - timedelta(days = 365), today + timedelta(days = 10))
+ax.set_xlim(today - timedelta(days = 365 + lagERA5), today + timedelta(days = 10))
 ax.set_ylim(-10, 35)
 ax.plot((-1e9, 1e9), (0, 0), color = "black")
 ax.set_ylabel("$^\circ$ C")
@@ -419,7 +419,7 @@ doLegendRecordMax = True
 doLegendRecordMin = True
 
 for j, d in enumerate(datesDay):
-        if d > today - timedelta(days = 365):
+        if d > today - timedelta(days = 365 + lagERA5):
         
                 if doLegend:
                     legendMax="Maximum journalier à ce jour"
@@ -471,7 +471,7 @@ ax.xaxis.set_major_locator(locator)
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b %y'))
 ax.xaxis.set_tick_params(rotation=45)
 ax.set_axisbelow(True)
-ax.set_xlim(today - timedelta(days = 365), today + timedelta(days = 10))
+ax.set_xlim(today - timedelta(days = 365 + lagERA5), today + timedelta(days = 10))
 ax.set_ylim(-25, 40)
 ax.plot((-1e9, 1e9), (0, 0), color = "black")
 ax.set_ylabel("$^\circ$ C")
@@ -482,7 +482,7 @@ ax.text(ax.get_xlim()[1], ax.get_ylim()[0],  "\nDernière donnée: " + str(dates
             rotation =90, ha = "left", va = "bottom", fontsize = 4)
 ax.legend(fontsize = 8)
 fig.tight_layout()
-fig.savefig("../figs/T2m_MinMax" + locationName + "_" + "last365d.png", dpi = 300)
+fig.savefig("../figs/T2m_MinMax_" + locationName + "_" + "last365d.png", dpi = 300)
 plt.close(fig)
 
 
@@ -560,7 +560,7 @@ plt.close(fig)
 #		    rotation =90, ha = "left", va = "bottom", fontsize = 4)
 #	ax.legend(fontsize = 8)
 #	fig.tight_layout()
-#	fig.savefig("../figs/T2m_MinMax" + locationName + "_" + str(year) + ".png", dpi = 300)
+#	fig.savefig("../figs/T2m_MinMax_" + locationName + "_" + str(year) + ".png", dpi = 300)
 #	plt.close(fig)
 #
 #
