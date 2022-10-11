@@ -338,7 +338,7 @@ plt.close(fig)
 
 # Plot previous 365 days and previous years
 
-fig, ax = plt.subplots(figsize = (7, 4))
+fig, ax = plt.subplots(figsize = (7, 5))
 
 # Tile the cycle
 # Subset the data
@@ -375,7 +375,7 @@ plt.close(fig)
 # Repeat for all years before this year
 for year in np.arange(startYear, endYear):
 	print(year)
-	fig, ax = plt.subplots(figsize = (7, 4))
+	fig, ax = plt.subplots(figsize = (7, 5))
 
 	# Subset the data
 	ax.plot(datesDay, cycleSmoothedTiled, lw = 1, color = "k", ls = "--", label = "Moyenne climatologique (" + str(yearbc) + "-" + str(yearec) + ")")
@@ -408,7 +408,7 @@ for year in np.arange(startYear, endYear):
 # Do the max-min statistics
 # -------------------------
 
-fig, ax = plt.subplots(figsize = (7, 4))
+fig, ax = plt.subplots(figsize = (7, 5))
 
 # The maximum recorded for that day until now (without today). The first year we can't do anything obviously.
 maxToDate = [np.nan for _ in range(365)] + [np.max(dataDayMax[j % 365 : j : 365]) for j in np.arange(365, len(dataDayMax))]
