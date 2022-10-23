@@ -392,7 +392,7 @@ for year in np.arange(startYear, endYear):
 	ax.xaxis.set_major_locator(locator)
 	ax.set_xlim(datetime(year - 1, 12, 31), datetime(year + 1, 1, 1))
 	ax.set_ylim(-10, 35)
-	ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b %y'))
+	ax.xaxis.set_major_formatter(mdates.DateFormatter('%d %b'))
 	ax.xaxis.set_tick_params(rotation=45)
 	ax.set_axisbelow(True)
 	ax.plot((-1e9, 1e9), (0, 0), color = "black")
