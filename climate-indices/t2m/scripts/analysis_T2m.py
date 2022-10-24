@@ -531,7 +531,7 @@ ax.text(ax.get_xlim()[1], ax.get_ylim()[0],  "\nDernière donnée: " + str(dates
             rotation =90, ha = "left", va = "bottom", fontsize = 4)
 ax.legend(fontsize = 8)
 fig.tight_layout()
-fig.savefig("../figs/T2m_MinMax" + locationName + "_" + "last365d.png", dpi = 300)
+fig.savefig("../figs/T2m_MinMax_" + locationName + "_" + "last365d.png", dpi = 300)
 plt.close(fig)
 
 
