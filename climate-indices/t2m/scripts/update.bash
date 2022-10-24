@@ -37,4 +37,4 @@ git add ../output/dailyStatistics_T2m_Bruxelles.csv
 git add ../output/hourly_T2M_Bruxelles.csv
 git commit -m "Daily update"
 
-git push origin main
+git push origin operational
