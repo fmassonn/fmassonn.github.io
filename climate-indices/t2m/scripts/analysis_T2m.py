@@ -14,10 +14,15 @@ import matplotlib.pyplot as plt
 import os, sys
 import matplotlib.dates  as mdates
 import matplotlib
+
 matplotlib.rcParams['font.family'] = "Arial Narrow"
 
 import cdsapi
 c = cdsapi.Client()
+
+import requests
+import csv
+import io
 
 from datetime import datetime, timedelta
 from netCDF4  import Dataset
@@ -62,6 +67,7 @@ startYear    = startDate.year
 
 # Domain definition. Fetched from the above dictionary
 locationName = "Bruxelles"
+doAddLatestData = True # Whether to include the RMI latest data (only for Brussels)
 
 try:
 	domainArea = dictLocations[locationName]
@@ -205,6 +211,7 @@ else: # if we are in February or later month
 	
 
 
+
 # Check that there is no issue in the date recording: missing day, not evenly spaced data...
 if len(set([dates[j + 1] - dates[j] for j, d in enumerate(dates[:-1])])) != 1:
 	stop()
@@ -243,12 +250,13 @@ datesDay = dates[::24]
 
 print("... Mean")
 dataDayMean =   [np.mean(data[j : j + 24]) for j in np.arange(0, len(data), 24)]
-print("... Median")
-dataDayMedian =   [np.mean(data[j : j + 24]) for j in np.arange(0, len(data), 24)]
 print("... Max")
 dataDayMax =   [np.max(data[j : j + 24]) for j in np.arange(0, len(data), 24)]
 print("... Min")
 dataDayMin =   [np.min(data[j : j + 24]) for j in np.arange(0, len(data), 24)]
+
+# Flag the data as "ERA5"
+flagDayData = ["ERA5" for d in dataDayMean]
 
 # Write the data (daily statistics) to CSV file
 outCSV = "../output/dailyStatistics_T2m_" + locationName + ".csv"
@@ -261,10 +269,46 @@ with open(outCSV, "w") as csvFile:
 		                             str(np.round(dataDayMin[j] , 2)) + ","  + \
 		                             str(np.round(dataDayMax[j] , 2))        + "\n")
 
+
+# Special case for Bruxelles
+if locationName == "Bruxelles" and doAddLatestData:
+    thisURL = "https://www.meteo.be/resources/climatology/uccle_month/Uccle_observations.txt"
+    myfile = requests.get(thisURL)
+    reader = csv.reader( \
+        io.StringIO(myfile.text, newline="\n"), skipinitialspace=True, delimiter=" " \
+               )
+    # Skip header
+    # Skip first rows
+    [next(reader) for j in range(5)]
+    
+    
+    datesDayListTemp = list()
+    dataDayMeanListTemp = list()
+    dataDayMinListTemp = list()
+    dataDayMaxListTemp = list()
+    
+    for j, row in enumerate(reader):
+            if j < 10:
+                thisDate = datetime.strptime(row[0], "%d-%m-%Y")
+                
+                if thisDate > datesDay[-1]:
+                    datesDayListTemp.append(thisDate)
+                    dataDayMeanListTemp.append(row[3])
+                    dataDayMinListTemp.append(row[2])
+                    dataDayMaxListTemp.append(row[1])
+ 
+    # Append
+    [datesDay.append(     d)      for d in datesDayListTemp[   -1::-1]]
+    [dataDayMean.append(float(d)) for d in dataDayMeanListTemp[-1::-1 ]]
+    [dataDayMin.append(float(d))  for d in dataDayMinListTemp[-1::-1  ]]
+    [dataDayMax.append(float(d))  for d in dataDayMaxListTemp[-1::-1  ]]
+    [flagDayData.append("RMI")    for d in datesDayListTemp[-1::-1]]
+
+
+
 # Data check plots
 fig, ax = plt.subplots(2, 2)
 ax[0, 0].plot(datesDay, dataDayMean) ; ax[0, 0].set_title("Day mean")
-ax[0, 1].plot(datesDay, dataDayMedian); ax[0, 1].set_title("Day median")
 ax[1, 0].plot(datesDay, dataDayMin);    ax[1, 0].set_title("Day min")
 ax[1, 1].plot(datesDay, dataDayMax);    ax[1, 1].set_title("Day max")
 
@@ -350,7 +394,12 @@ for j, d in enumerate(datesDay):
 	if d > today - timedelta(days = 365):
 		xmin, xmax = -10, 10
 		color = plt.cm.RdBu_r(int((anomalies[j]- xmin) * 255 / (xmax - xmin)))[:3]
-		ax.bar(datesDay[j], anomalies[j], bottom = cycleSmoothedTiled[j], color = color, lw = 2, width = 1.0)
+		if flagDayData[j] == "ERA5":
+			ax.bar(datesDay[j], anomalies[j], bottom = cycleSmoothedTiled[j], color = color, lw = 2, width = 1.0)
+		else:
+			ax.bar(datesDay[j], anomalies[j], bottom = cycleSmoothedTiled[j], color = "white", edgecolor = color, linestyle = "-", lw = 0.5, width = 1.0)
+            
+            
 locator = mdates.MonthLocator()  # every month
 ax.grid()
 ax.xaxis.set_major_locator(locator)
