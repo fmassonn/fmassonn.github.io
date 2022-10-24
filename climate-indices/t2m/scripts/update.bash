@@ -10,7 +10,7 @@ then
 	module load ELIC_Python/1-foss-2020b
 fi
 
-#python3 analysis_T2m.py
+python3 analysis_T2m.py
 
 
 
