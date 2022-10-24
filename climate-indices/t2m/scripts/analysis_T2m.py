@@ -397,7 +397,7 @@ for j, d in enumerate(datesDay):
 		if flagDayData[j] == "ERA5":
 			ax.bar(datesDay[j], anomalies[j], bottom = cycleSmoothedTiled[j], color = color, lw = 2, width = 1.0)
 		else:
-			ax.bar(datesDay[j], anomalies[j], bottom = cycleSmoothedTiled[j], color = "white", edgecolor = color, linestyle = "-", lw = 0.5, width = 1.0)
+			ax.bar(datesDay[j], anomalies[j], bottom = cycleSmoothedTiled[j], color = "white", edgecolor = color, linestyle = "--", lw = 0.25, width = 1.0)
             
             
 locator = mdates.MonthLocator()  # every month
