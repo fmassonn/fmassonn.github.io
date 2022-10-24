@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 set -o nounset
 set -o errexit
@@ -10,7 +10,7 @@ then
 	module load ELIC_Python/1-foss-2020b
 fi
 
-python3 analysis_T2m.py
+#python3 analysis_T2m.py
 
 
 
@@ -31,7 +31,10 @@ done
 echo "</p>" >> $outFile
 
 git add ../figs/T2m_Bruxelles_*.png
-
+git add ../figs/T2m_MinMax_Bruxelles_last365d.png
+git add ../output/hourly_T2M_Bruxelles.csv
+git add ../output/dailyStatistics_T2m_Bruxelles.csv
+git add ../output/hourly_T2M_Bruxelles.csv
 git commit -m "Daily update"
 
 git push origin main
