@@ -5,6 +5,13 @@
 
 _Pour la même figure sur les  années précédentes, voir [ici](./T2mAllYears.md)_
 
+<br>
+<br>
+<p>
+<img src="./figs/T2m_MinMax_Bruxelles_last365d.png" width="1200">
+</p>
+
+
 ## Bienvenue
 Cette page reprend les statistiques de température de l'air à 2 mètres telles que reconstruites par la **[réanalyse atmosphérique ERA5](https://rmets.onlinelibrary.wiley.com/doi/10.1002/qj.3803)** (Hersbach et al., 2020) sur une zone de ~30 km x ~30 km située au-dessus de Bruxelles, en quasi temps réel (délai de 6 jours). Ces données sont accessibles publiquement via le [_Climate Data Store_](https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview) du programme Copernicus d'observation de la Terre de l'Union Européenne.
 
