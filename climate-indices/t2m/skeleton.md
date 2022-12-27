@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="./figs/T2m_Bruxelles_last365d.png" width="1200">
+<img src="./figs/T2m_LLOOCCNNAAMMEE_last365d.png" width="1200">
 </p>
 
 _Pour la même figure sur les  années précédentes, voir [ici](./T2mAllYears.md)_
@@ -8,12 +8,12 @@ _Pour la même figure sur les  années précédentes, voir [ici](./T2mAllYears.m
 <br>
 <br>
 <p>
-<img src="./figs/T2m_MinMax_Bruxelles_last365d.png" width="1200">
+<img src="./figs/T2m_MinMax_LLOOCCNNAAMMEE_last365d.png" width="1200">
 </p>
 
 
 ## Bienvenue
-Cette page reprend les statistiques de température de l'air à 2 mètres telles que reconstruites par la **[réanalyse atmosphérique ERA5](https://rmets.onlinelibrary.wiley.com/doi/10.1002/qj.3803)** (Hersbach et al., 2020) sur une zone de ~30 km x ~30 km située au-dessus de Bruxelles, en quasi temps réel (délai de 6 jours). Ces données sont accessibles publiquement via le [_Climate Data Store_](https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview) du programme Copernicus d'observation de la Terre de l'Union Européenne.
+Cette page reprend les statistiques de température de l'air à 2 mètres telles que reconstruites par la **[réanalyse atmosphérique ERA5](https://rmets.onlinelibrary.wiley.com/doi/10.1002/qj.3803)** (Hersbach et al., 2020) sur une zone de ~30 km x ~30 km située au-dessus de LLOOCCNNAAMMEE, en quasi temps réel (délai de 6 jours). Ces données sont accessibles publiquement via le [_Climate Data Store_](https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview) du programme Copernicus d'observation de la Terre de l'Union Européenne.
 
 **Clause de non-responsabilité**: ces données, issues d'un modèle numérique atmosphérique contraint par des observations, n'ont pas pour vocation de remplacer des données issues de stations météorologiques. Elles sont cependant suffisantes pour apprécier la variabilité saisonnière de la température, la fréquence, la durée, ou l'intensité de récentes vagues de chaleur ou de froid, et les tendances multi-décennales.
 
@@ -24,9 +24,9 @@ Les données brutes servant à produire les figures ci-dessus sont téléchargea
 
 ## Données brutes et statistiques
 
-**[Données à l'échelle horaire (Clic droit + Enregistrer)](./output/hourly_T2M_Bruxelles.csv)**
+**[Données à l'échelle horaire (Clic droit + Enregistrer)](./output/hourly_T2M_LLOOCCNNAAMMEE.csv)**
 
-**[Données agrégées à l'échelle journalière (moyenne, minimum, maximum) (Clic droit + Enregistrer)](./output/dailyStatistics_T2m_Bruxelles.csv)**
+**[Données agrégées à l'échelle journalière (moyenne, minimum, maximum) (Clic droit + Enregistrer)](./output/dailyStatistics_T2m_LLOOCCNNAAMMEE.csv)**
 
 Le script (Python3) qui produit ces données est disponible [ici](./scripts/analysis_T2m.py)
 
