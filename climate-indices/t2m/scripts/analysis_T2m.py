@@ -526,7 +526,7 @@ for locationName in locationNames:
 	ax.xaxis.set_tick_params(rotation=45)
 	ax.set_axisbelow(True)
 	ax.set_xlim(today - timedelta(days = 365), today + timedelta(days = 10))
-	ax.set_ylim(-25, 40)
+	ax.set_ylim(-25, 45)
 	ax.plot((-1e9, 1e9), (0, 0), color = "black")
 	ax.set_ylabel("$^\circ$ C")
 	ax.set_title("Températures minimales et maximales journalières de l'air à 2 m\n" + locationName + " (données ERA5)")
