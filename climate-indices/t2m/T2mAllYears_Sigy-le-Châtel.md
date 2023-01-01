@@ -1,4 +1,7 @@
 <p align="center">
+<h1> 2022 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_2022.png" width="1200">
+<br>
 <h1> 2021 </h1>
 <img src="./figs/T2m_Sigy-le-Châtel_2021.png" width="1200">
 <br>
