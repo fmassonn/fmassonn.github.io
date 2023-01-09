@@ -109,8 +109,7 @@ for locationName in locationNames:
 	endDay       = endDate.day
 	
 	
-	
-	# Organize inputfiles. There is one file per year
+	# Organize input files. There is one file per year
 	# Special attention must be paid to end year
 	# because files need to be downloaded separately for the last month
 	# (otherwise, crash) and for all months until the last month not included
@@ -126,8 +125,11 @@ for locationName in locationNames:
 	data  = list()
 	
 	
+	# Run all the years up to the last but one (Python convention)
 	for year in np.arange(startYear, endYear):
 		fileYear = "../data/download_T2M_" + str(locationName) + "_" + str(year) + ".nc"
+
+		# Check if annual file exists, otherwise run the download function
 		if os.path.exists(fileYear):
 			print("File " + fileYear + " exists, no download")
 		else:
@@ -139,7 +141,30 @@ for locationName in locationNames:
 	
 		# Read & store the data
 		f = Dataset(fileYear, mode = "r")
-		thisData = np.squeeze(f.variables["t2m"][:]).data + offsetKtoC # .data to unmask
+
+		try:
+			expVerDim = f.dimensions["expver"]
+
+			# Special case where t2m has an extra dimension of length 2
+			# and the data has to be fetched accordingly. Sometimes it 
+			# is in the first, sometimes in the second dimension of 
+			# that variable
+
+			fillValue= f.variables["t2m"]._FillValue
+
+			t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
+			t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
+
+			t2m_1[t2m_1 == fillValue] = np.nan
+			t2m_2[t2m_2 == fillValue] = np.nan
+
+			thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
+
+		except KeyError:
+
+			# If data is organized normally
+			thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
+
 		thisTime = f.variables["time"][:]
 		thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
 		f.close()
@@ -162,8 +187,32 @@ for locationName in locationNames:
 		fileOut    = "../data/download_T2M_" + str(locationName) + "_" + str(endYear) + "-" + str(endMonth).zfill(2) + ".nc"
 		downloadERA5(endYear, listMonths, listDays, listTime, domainArea, outFile = fileOut)
 	
+		# Read & store the data
 		f = Dataset(fileOut, mode = "r")
-		thisData = np.squeeze(f.variables["t2m"][:]).data + offsetKtoC # .data to unmask
+
+		try:
+			expVerDim = f.dimensions["expver"]
+
+			# Special case where t2m has an extra dimension of length 2
+			# and the data has to be fetched accordingly. Sometimes it 
+			# is in the first, sometimes in the second dimension of 
+			# that variable
+
+			fillValue= f.variables["t2m"]._FillValue
+
+			t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
+			t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
+
+			t2m_1[t2m_1 == fillValue] = np.nan
+			t2m_2[t2m_2 == fillValue] = np.nan
+
+			thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
+
+		except KeyError:
+
+			# If data is organized normally
+			thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
+
 		thisTime = f.variables["time"][:]
 		thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
 		f.close()
@@ -172,7 +221,7 @@ for locationName in locationNames:
 	 	# Save the data in array
 		[dates.append(d) for d in thisDate]
 		[data.append(d)  for d in thisData]
-		
+
 	else: # if we are in February or later month
 		for m in np.arange(1, endMonth):
 			listMonths = [str(m).zfill(2)]
@@ -183,13 +232,36 @@ for locationName in locationNames:
 				print("File " + fileOut + " already exists, not downloading")
 			else:
 				downloadERA5(endYear, listMonths, listDays, listTime, domainArea, outFile = fileOut)
-	
-			# Read in the data
+			# Read & store the data
 			f = Dataset(fileOut, mode = "r")
-			thisData = np.squeeze(f.variables["t2m"][:]).data + offsetKtoC # .data to unmask
+	
+			try:
+				expVerDim = f.dimensions["expver"]
+	
+				# Special case where t2m has an extra dimension of length 2
+				# and the data has to be fetched accordingly. Sometimes it 
+				# is in the first, sometimes in the second dimension of 
+				# that variable
+	
+				fillValue= f.variables["t2m"]._FillValue
+	
+				t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
+				t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
+	
+				t2m_1[t2m_1 == fillValue] = np.nan
+				t2m_2[t2m_2 == fillValue] = np.nan
+	
+				thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
+	
+			except KeyError:
+	
+				# If data is organized normally
+				thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
+	
 			thisTime = f.variables["time"][:]
 			thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
 			f.close()
+	
 		 	# Save the data in array
 			[dates.append(d) for d in thisDate]
 			[data.append(d)  for d in thisData]
@@ -200,18 +272,41 @@ for locationName in locationNames:
 		listTime   = [str(j).zfill(2) + ":00" for j in np.arange(24)]
 		fileOut = "../data/download_T2M_" + str(locationName) + "_" + str(endYear) + "_" + str(endMonth).zfill(2) + "_" + str(1).zfill(2) + "-" + str(endDay).zfill(2) + ".nc"
 		downloadERA5(endYear, listMonths, listDays, listTime, domainArea, outFile = fileOut)
-	
+
+		# Read & store the data
 		f = Dataset(fileOut, mode = "r")
-		thisData = np.squeeze(f.variables["t2m"][:]).data + offsetKtoC # .data to unmask
+
+		try:
+			expVerDim = f.dimensions["expver"]
+
+			# Special case where t2m has an extra dimension of length 2
+			# and the data has to be fetched accordingly. Sometimes it 
+			# is in the first, sometimes in the second dimension of 
+			# that variable
+
+			fillValue= f.variables["t2m"]._FillValue
+
+			t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
+			t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
+
+			t2m_1[t2m_1 == fillValue] = np.nan
+			t2m_2[t2m_2 == fillValue] = np.nan
+
+			thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
+
+		except KeyError:
+
+			# If data is organized normally
+			thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
+
 		thisTime = f.variables["time"][:]
 		thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
 		f.close()
+	
 	 	# Save the data in array
 		[dates.append(d) for d in thisDate]
 		[data.append(d)  for d in thisData]
 		
-	
-	
 	
 	# Check that there is no issue in the date recording: missing day, not evenly spaced data...
 	if len(set([dates[j + 1] - dates[j] for j, d in enumerate(dates[:-1])])) != 1:
@@ -224,16 +319,15 @@ for locationName in locationNames:
 	dates = [d       for    d in dates            if not (d.month == 2 and d.day == 29)]
 	
 	
-	
 	# Array with years
 	years = np.arange(startYear, endYear + 1)
 	
 	
 	# Basic data checks, to make sure nothing is anomalous.
-	fig, ax = plt.subplots()
-	ax.plot(dates, data)
-	fig.savefig("../figs/check_" + locationName + ".png")
-	plt.close(fig)
+	#fig, ax = plt.subplots()
+	#ax.plot(dates, data)
+	#fig.savefig("../figs/check_" + locationName + ".png")
+	#plt.close(fig)
 	
 	# Write the raw data (hourly) to CSV file
 	outCSV = "../output/hourly_T2M_" + locationName + ".csv"
