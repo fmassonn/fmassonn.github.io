@@ -38,6 +38,10 @@ do
 
   git add ../figs/T2m_${locName}_*.png
   git add ../figs/T2m_MinMax_${locName}_last365d.png
+ 
+  git add ../T2mAllYears_${locName}.md
+  git add ../${locName}.md
+
   git add ../output/hourly_T2M_${locName}.csv
   git add ../output/dailyStatistics_T2m_${locName}.csv
   git add ../output/hourly_T2M_${locName}.csv
