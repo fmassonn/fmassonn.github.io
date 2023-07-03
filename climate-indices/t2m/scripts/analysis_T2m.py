@@ -39,7 +39,7 @@ def downloadERA5(year, listMonths, listDays, listTime, domainArea, outFile = "..
         {
         'product_type': 'reanalysis',
         'format'      : 'netcdf',
-        'variable'    : '2m_temperature',
+        'variable'    : ['2m_temperature', 'total_precipitation'],
         'year'        : str(int(year)),
         'month'       : listMonths,
         'day'         : listDays,
