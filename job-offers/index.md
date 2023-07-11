@@ -13,7 +13,7 @@ Through three prestigious research programs, including the **European Research C
 At the Earth and Climate Center of UCLouvain, you will be part of a team with a long-standing reputation for excellence in polar research. With **connections to high-level initiatives and projects at national, European, and international levels**, you will have access to the latest research, technologies, and resources to significantly contribute to the expanding body of polar scientific knowledge.
 
 A description of the five positions, as well as guidelines to apply, are available hereafter.
-![image](https://user-images.githubusercontent.com/28858957/236170670-7f495cdf-4262-42b5-8cb4-d5bbf9b8b2ff.png)
+
 
 =======
 
