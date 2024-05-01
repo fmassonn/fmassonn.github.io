@@ -1,6 +1,8 @@
 # Fried Liver Attack
 
-With 3....Nf6, black has allowed aggressive play from white and has now to take responsibilities. The f7 pawn is attacked twice, and White threatens a fork on the queen and the rook. Black cannot move the pawn nor capture the attacking pieces, nor enhance the protection of f7. Black has several strategies to solve his short-term problems: (1) obstruct the range of the well-placed bishop on c4 by playing 4....d5 or counter-attack White's exposed king. In the mid-term, black wants to kick away the attacking pieces.
+With 3....Nf6, black has allowed aggressive play from white and has now to take responsibilities against one of the most aggressive moves, 4.Ng5. The f7 pawn is attacked twice, and White threatens a fork on the queen and the rook. Black cannot move the pawn nor capture the attacking pieces, nor enhance the protection of f7. Black has several strategies to solve his short-term problems: (1) obstruct the range of the well-placed bishop on c4 by playing 4....d5 or counter-attack White's exposed king. In the mid-term, black wants to kick away the attacking pieces.
+
+Note that the position is absolutely not lost for Black, but Black can easily go wrong.
 
 ## 4....d5: the *Normal Variation* (+0.00)
 **Why** The most principled move since this takes the center, opens the way for the bishop and obstructs the bishop while attacking it
