@@ -481,12 +481,12 @@ for locationName in locationNames:
 	
 	# Tile the cycle
 	# Subset the data
-	ax.plot(datesDay, cycleSmoothedTiled, lw = 1, color = "k", ls = "--", label = "Moyenne climatologique (" + str(yearbc) + "-" + str(yearec) + ")")
+	ax.plot(datesDay, cycleSmoothedTiled, lw = 1, color = "k", ls = "--", label = "Climatological average (" + str(yearbc) + "-" + str(yearec) + ")")
 	
 	#ax.plot(dateOneYear, cycle_smoothed, "k--")
 	anomalies = np.array(dataDayMean) - np.array(cycleSmoothedTiled)
 	for j, d in enumerate(datesDay):
-		if d > today - timedelta(days = 365):
+		if d > today - timedelta(days = 465):
 			xmin, xmax = -10, 10
 			color = plt.cm.RdBu_r(int((anomalies[j]- xmin) * 255 / (xmax - xmin)))[:3]
 			if flagDayData[j] == "ERA5":
@@ -502,14 +502,12 @@ for locationName in locationNames:
 	ax.xaxis.set_tick_params(rotation=45)
 	ax.set_axisbelow(True)
 	ax.set_xlim(today - timedelta(days = 365), today + timedelta(days = 10))
+	ax.set_xlim(datetime(2022, 9, 30), datetime(2023, 10, 2))
 	ax.set_ylim(-10, 35)
 	ax.plot((-1e9, 1e9), (0, 0), color = "black")
 	ax.set_ylabel("$^\circ$ C")
 	ax.set_title("Température journalière moyenne de l'air à 2 m\n" + locationName + " (données ERA5)")
-	ax.text(ax.get_xlim()[1], ax.get_ylim()[0],  "\nDernière donnée: " + str(datesDay[-1].strftime("%d %b %y"))  +
-	            ". Graphe: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S") +
-	            " | @FMassonnet",
-	            rotation =90, ha = "left", va = "bottom", fontsize = 4)
+	ax.set_title("Daily mean 2-m air temperature\n" + locationName + " (data ERA5)")
 	ax.legend()
 	fig.tight_layout()
 	figName = "../figs/T2m_" + locationName + "_" + "last365d.png"
