@@ -6,8 +6,8 @@ set -o errexit
 if [[ $HOSTNAME == "aurora" ]]
 then
 	module purge
-	module load releases/2020b
-	module load ELIC_Python/1-foss-2020b
+	module load releases/2023b
+	module load ELIC_Python/1-foss-2023b
 fi
 
 python3 analysis_T2m.py
