@@ -222,3 +222,82 @@
 <h1> 1985 </h1>
 <img src="./figs/T2m_Sigy-le-Châtel_1985.png" width="1200">
 <br>
+<h1> 1984 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1984.png" width="1200">
+<br>
+<h1> 1983 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1983.png" width="1200">
+<br>
+<h1> 1982 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1982.png" width="1200">
+<br>
+<h1> 1981 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1981.png" width="1200">
+<br>
+<h1> 1980 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1980.png" width="1200">
+<br>
+<h1> 1979 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1979.png" width="1200">
+<br>
+<h1> 1978 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1978.png" width="1200">
+<br>
+<h1> 1977 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1977.png" width="1200">
+<br>
+<h1> 1976 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1976.png" width="1200">
+<br>
+<h1> 1975 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1975.png" width="1200">
+<br>
+<h1> 1974 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1974.png" width="1200">
+<br>
+<h1> 1973 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1973.png" width="1200">
+<br>
+<h1> 1972 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1972.png" width="1200">
+<br>
+<h1> 1971 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1971.png" width="1200">
+<br>
+<h1> 1970 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1970.png" width="1200">
+<br>
+<h1> 1969 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1969.png" width="1200">
+<br>
+<h1> 1968 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1968.png" width="1200">
+<br>
+<h1> 1967 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1967.png" width="1200">
+<br>
+<h1> 1966 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1966.png" width="1200">
+<br>
+<h1> 1965 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1965.png" width="1200">
+<br>
+<h1> 1964 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1964.png" width="1200">
+<br>
+<h1> 1963 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1963.png" width="1200">
+<br>
+<h1> 1962 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1962.png" width="1200">
+<br>
+<h1> 1961 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1961.png" width="1200">
+<br>
+<h1> 1960 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1960.png" width="1200">
+<br>
+<h1> 1959 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_1959.png" width="1200">
+<br>
+</p>
