@@ -1,4 +1,7 @@
 <p align="center">
+<h1> 2024 </h1>
+<img src="./figs/T2m_Sigy-le-Châtel_2024.png" width="1200">
+<br>
 <h1> 2023 </h1>
 <img src="./figs/T2m_Sigy-le-Châtel_2023.png" width="1200">
 <br>
