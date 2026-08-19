@@ -63,7 +63,7 @@ def downloadERA5(year, listMonths, listDays, listTime, domainArea, outFile = "..
 dictLocations = { \
 		# Location name Lat max     Lon min  Lat min  Lon max
 		"Bruxelles":	 	  [50.8,      4.2,     50.7,    4.3],
-		"Sigy-le-Châtel"    :     [46.6,      4.5,     46.5,    4.6],
+#		"Sigy-le-Châtel"    :     [46.6,      4.5,     46.5,    4.6],
 		}
                     
 # ==========================                    
@@ -77,7 +77,7 @@ startDate    = datetime(1940, 1, 1)
 startYear    = startDate.year
 
 # Domain definition. Fetched from the above dictionary
-locationNames = ["Bruxelles", "Sigy-le-Châtel", ]
+locationNames = ["Bruxelles",]#] "Sigy-le-Châtel", ]
 
 doAddLatestData = True # Whether to include the RMI latest data (only for Brussels)
 
@@ -98,10 +98,10 @@ offsetKtoC = -273.16
 
 for locationName in locationNames:
 	try:
-        	domainArea = dictLocations[locationName]
+		domainArea = dictLocations[locationName]
 	except KeyError:
-        	print(locationName + ": Localisation pas encore identifiée")
-        	sys.exit()
+		print(locationName + ": Localisation pas encore identifiée")
+		sys.exit()
 
 	# Fetch information regarding today
 	today        = datetime.today()
@@ -146,41 +146,41 @@ for locationName in locationNames:
 			listTime   = [str(j).zfill(2) + ":00" for j in np.arange(24)]
 			downloadERA5(year, listMonths, listDays, listTime, domainArea, outFile = fileYear)
 	
-"""		# Read & store the data
-		f = Dataset(fileYear, mode = "r")
-
-		try:
-			expVerDim = f.dimensions["expver"]
-
-			# Special case where t2m has an extra dimension of length 2
-			# and the data has to be fetched accordingly. Sometimes it 
-			# is in the first, sometimes in the second dimension of 
-			# that variable
-
-			fillValue= f.variables["t2m"]._FillValue
-
-			t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
-			t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
-
-			t2m_1[t2m_1 == fillValue] = np.nan
-			t2m_2[t2m_2 == fillValue] = np.nan
-
-			thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
-
-		except KeyError:
-
-			# If data is organized normally
-			thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
-
-		thisTime = f.variables["time"][:]
-		thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
-		f.close()
-	
-	
-	 	# Save the data in the list
-		[dates.append(d) for d in thisDate]
-		[data.append(d)  for d in thisData]
-	
+#		# Read & store the data
+#		f = Dataset(fileYear, mode = "r")
+#
+#		try:
+#			expVerDim = f.dimensions["expver"]
+#
+#			# Special case where t2m has an extra dimension of length 2
+#			# and the data has to be fetched accordingly. Sometimes it 
+#			# is in the first, sometimes in the second dimension of 
+#			# that variable
+#
+#			fillValue= f.variables["t2m"]._FillValue
+#
+#			t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
+#			t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
+#
+#			t2m_1[t2m_1 == fillValue] = np.nan
+#			t2m_2[t2m_2 == fillValue] = np.nan
+#
+#			thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
+#
+#		except KeyError:
+#
+#			# If data is organized normally
+#			thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
+#
+#		thisTime = f.variables["time"][:]
+#		thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
+#		f.close()
+#	
+#	
+#	 	# Save the data in the list
+#		[dates.append(d) for d in thisDate]
+#		[data.append(d)  for d in thisData]
+#	
 	
 	# Then, treat the special case of the last year
 	# First, download all months until previous month
@@ -193,42 +193,43 @@ for locationName in locationNames:
 		listTime   = [str(j).zfill(2) + ":00" for j in np.arange(24)]
 		fileOut    = "../data/download_T2M_" + str(locationName) + "_" + str(endYear) + "-" + str(endMonth).zfill(2) + ".nc"
 		downloadERA5(endYear, listMonths, listDays, listTime, domainArea, outFile = fileOut)
-	
-		# Read & store the data
-		f = Dataset(fileOut, mode = "r")
 
-		try:
-			expVerDim = f.dimensions["expver"]
-
-			# Special case where t2m has an extra dimension of length 2
-			# and the data has to be fetched accordingly. Sometimes it 
-			# is in the first, sometimes in the second dimension of 
-			# that variable
-
-			fillValue= f.variables["t2m"]._FillValue
-
-			t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
-			t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
-
-			t2m_1[t2m_1 == fillValue] = np.nan
-			t2m_2[t2m_2 == fillValue] = np.nan
-
-			thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
-
-		except KeyError:
-
-			# If data is organized normally
-			thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
-
-		thisTime = f.variables["time"][:]
-		thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
-		f.close()
-	
-	
-	 	# Save the data in array
-		[dates.append(d) for d in thisDate]
-		[data.append(d)  for d in thisData]
-
+#	
+#		# Read & store the data
+#		f = Dataset(fileOut, mode = "r")
+#
+#		try:
+#			expVerDim = f.dimensions["expver"]
+#
+#			# Special case where t2m has an extra dimension of length 2
+#			# and the data has to be fetched accordingly. Sometimes it 
+#			# is in the first, sometimes in the second dimension of 
+#			# that variable
+#
+#			fillValue= f.variables["t2m"]._FillValue
+#
+#			t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
+#			t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
+#
+#			t2m_1[t2m_1 == fillValue] = np.nan
+#			t2m_2[t2m_2 == fillValue] = np.nan
+#
+#			thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
+#
+#		except KeyError:
+#
+#			# If data is organized normally
+#			thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
+#
+#		thisTime = f.variables["time"][:]
+#		thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
+#		f.close()
+#	
+#	
+#	 	# Save the data in array
+#		[dates.append(d) for d in thisDate]
+#		[data.append(d)  for d in thisData]
+#
 	else: # if we are in February or later month
 		for m in np.arange(1, endMonth):
 			listMonths = [str(m).zfill(2)]
@@ -239,82 +240,81 @@ for locationName in locationNames:
 				print("File " + fileOut + " already exists, not downloading")
 			else:
 				downloadERA5(endYear, listMonths, listDays, listTime, domainArea, outFile = fileOut)
-			# Read & store the data
-			f = Dataset(fileOut, mode = "r")
-	
-			try:
-				expVerDim = f.dimensions["expver"]
-	
-				# Special case where t2m has an extra dimension of length 2
-				# and the data has to be fetched accordingly. Sometimes it 
-				# is in the first, sometimes in the second dimension of 
-				# that variable
-	
-				fillValue= f.variables["t2m"]._FillValue
-	
-				t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
-				t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
-	
-				t2m_1[t2m_1 == fillValue] = np.nan
-				t2m_2[t2m_2 == fillValue] = np.nan
-	
-				thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
-	
-			except KeyError:
-	
-				# If data is organized normally
-				thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
-	
-			thisTime = f.variables["time"][:]
-			thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
-			f.close()
-	
-		 	# Save the data in array
-			[dates.append(d) for d in thisDate]
-			[data.append(d)  for d in thisData]
-		
-		# Download all days of current month
-		listMonths = [str(endMonth).zfill(2)]
-		listDays   = [str(d).zfill(2) for d in np.arange(1, endDay + 1)]
-		listTime   = [str(j).zfill(2) + ":00" for j in np.arange(24)]
-		fileOut = "../data/download_T2M_" + str(locationName) + "_" + str(endYear) + "_" + str(endMonth).zfill(2) + "_" + str(1).zfill(2) + "-" + str(endDay).zfill(2) + ".nc"
-		downloadERA5(endYear, listMonths, listDays, listTime, domainArea, outFile = fileOut)
 
-		# Read & store the data
-		f = Dataset(fileOut, mode = "r")
+#			# Read & store the data
+#			f = Dataset(fileOut, mode = "r")
+#	
+#			try:
+#				expVerDim = f.dimensions["expver"]
+#				# Special case where t2m has an extra dimension of length 2
+#				# and the data has to be fetched accordingly. Sometimes it 
+#				# is in the first, sometimes in the second dimension of 
+#				# that variable
+#	
+#				fillValue= f.variables["t2m"]._FillValue
+#	
+#				t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
+#				t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
+#	
+#				t2m_1[t2m_1 == fillValue] = np.nan
+#				t2m_2[t2m_2 == fillValue] = np.nan
+#	
+#				thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
+#	
+#			except KeyError:
+#	
+#				# If data is organized normally
+#				thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
+#	
+#			thisTime = f.variables["time"][:]
+#			thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
+#			f.close()
+#	
+#		 	# Save the data in array
+#			[dates.append(d) for d in thisDate]
+#			[data.append(d)  for d in thisData]
+#		
+#		# Download all days of current month
+#		listMonths = [str(endMonth).zfill(2)]
+#		listDays   = [str(d).zfill(2) for d in np.arange(1, endDay + 1)]
+#		listTime   = [str(j).zfill(2) + ":00" for j in np.arange(24)]
+#		fileOut = "../data/download_T2M_" + str(locationName) + "_" + str(endYear) + "_" + str(endMonth).zfill(2) + "_" + str(1).zfill(2) + "-" + str(endDay).zfill(2) + ".nc"
+#		downloadERA5(endYear, listMonths, listDays, listTime, domainArea, outFile = fileOut)
 
-		try:
-			expVerDim = f.dimensions["expver"]
-
-			# Special case where t2m has an extra dimension of length 2
-			# and the data has to be fetched accordingly. Sometimes it 
-			# is in the first, sometimes in the second dimension of 
-			# that variable
-
-			fillValue= f.variables["t2m"]._FillValue
-
-			t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
-			t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
-
-			t2m_1[t2m_1 == fillValue] = np.nan
-			t2m_2[t2m_2 == fillValue] = np.nan
-
-			thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
-
-		except KeyError:
-
-			# If data is organized normally
-			thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
-
-		thisTime = f.variables["time"][:]
-		thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
-		f.close()
-	
-	 	# Save the data in array
-		[dates.append(d) for d in thisDate]
-		[data.append(d)  for d in thisData]
-		
-	
+#		# Read & store the data
+#		f = Dataset(fileOut, mode = "r")
+#
+#		try:
+#			expVerDim = f.dimensions["expver"]
+#
+#			# Special case where t2m has an extra dimension of length 2
+#			# and the data has to be fetched accordingly. Sometimes it 
+#			# is in the first, sometimes in the second dimension of 
+#			# that variable
+#
+#			fillValue= f.variables["t2m"]._FillValue
+#
+#			t2m_1 = np.squeeze(f.variables["t2m"][:, 0, :, :]).data 
+#			t2m_2 = np.squeeze(f.variables["t2m"][:, 1, :, :]).data 
+#
+#			t2m_1[t2m_1 == fillValue] = np.nan
+#			t2m_2[t2m_2 == fillValue] = np.nan
+#
+#			thisData = np.nanmean(np.array((t2m_1, t2m_2)), axis=0) + offsetKtoC
+#
+#
+#			# If data is organized normally
+#			thisData = np.squeeze(f.variables["t2m"][:]).data       + offsetKtoC
+#
+#		thisTime = f.variables["time"][:]
+#		thisDate = [dateRef + timedelta(days = t / 24) for t in thisTime]
+#		f.close()
+#	
+#	 	# Save the data in array
+#		[dates.append(d) for d in thisDate]
+#		[data.append(d)  for d in thisData]
+#		
+"""	
 	# Check that there is no issue in the date recording: missing day, not evenly spaced data...
 	if len(set([dates[j + 1] - dates[j] for j, d in enumerate(dates[:-1])])) != 1:
 		stop()
