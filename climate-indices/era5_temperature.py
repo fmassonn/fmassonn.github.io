@@ -58,33 +58,24 @@ from matplotlib.colors import Normalize
 ERA5_DATASET = "reanalysis-era5-single-levels-timeseries"
 ERA5_VARIABLE = "2m_temperature"
 
-# Beginning of the ERA5 time series.
 START_DATE = date(1940, 1, 1)
 
 # ERA5 is normally available with a latency of about five days.
 ERA5_LAG_DAYS = 5
 
-# Climatological reference period.
 CLIMATOLOGY_START = 1991
 CLIMATOLOGY_END = 2020
 
-# Re-download this many recent days on every run.
-#
-# This serves two purposes:
-#   1. retrieve data that were unavailable on the previous run;
-#   2. refresh recent ERA5T values in case they were subsequently revised.
+# Re-download this recent period on every run.
 REFRESH_DAYS = 120
 
-# Width of the centered circular moving average used for the seasonal cycle.
 CLIMATOLOGY_SMOOTHING_DAYS = 61
 
-# Recent daily observations at Uccle.
 KMI_URL = (
     "https://www.meteo.be/resources/"
     "climatology/uccle_month/Uccle_observations.txt"
 )
 
-# Directory structure.
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 OUTPUT_DIR = BASE_DIR / "output"
@@ -206,25 +197,24 @@ def read_era5_csv_zip(path: Path) -> pd.DataFrame:
     """
     Read ERA5 hourly 2-m temperature from a CDS ZIP archive.
 
-    The CSV produced by the ERA5 time-series product contains, among others:
+    Expected CSV columns include:
 
-        valid_time : UTC timestamp
-        latitude   : latitude of selected ERA5 grid point
-        longitude  : longitude of selected ERA5 grid point
-        t2m        : 2-m air temperature in K
+        valid_time
+        latitude
+        longitude
+        t2m
 
-    The CSV is read directly from the archive and is not extracted
-    permanently onto disk.
+    ``t2m`` is stored in kelvins and converted here to °C.
 
     Parameters
     ----------
     path
-        Path to the ZIP archive returned by the CDS.
+        Path to ZIP archive returned by the CDS.
 
     Returns
     -------
     pandas.DataFrame
-        UTC timestamp index and one column named ``temperature`` in °C.
+        UTC DatetimeIndex and one column named ``temperature`` in °C.
     """
 
     if not path.exists():
@@ -268,15 +258,6 @@ def read_era5_csv_zip(path: Path) -> pd.DataFrame:
         with archive.open(csv_name) as csv_file:
             df = pd.read_csv(csv_file)
 
-    logger.debug(
-        "ERA5 CSV columns: %s",
-        list(df.columns),
-    )
-
-    # ------------------------------------------------------------------
-    # Check expected columns
-    # ------------------------------------------------------------------
-
     required_columns = {
         "valid_time",
         "t2m",
@@ -291,10 +272,6 @@ def read_era5_csv_zip(path: Path) -> pd.DataFrame:
             f"Available columns: {list(df.columns)}"
         )
 
-    # ------------------------------------------------------------------
-    # Time
-    # ------------------------------------------------------------------
-
     df["valid_time"] = pd.to_datetime(
         df["valid_time"],
         utc=True,
@@ -307,10 +284,6 @@ def read_era5_csv_zip(path: Path) -> pd.DataFrame:
         raise ValueError(
             f"{n_invalid} ERA5 timestamps could not be parsed."
         )
-
-    # ------------------------------------------------------------------
-    # Temperature: K -> °C
-    # ------------------------------------------------------------------
 
     temperature_kelvin = pd.to_numeric(
         df["t2m"],
@@ -326,10 +299,6 @@ def read_era5_csv_zip(path: Path) -> pd.DataFrame:
     df["temperature"] = (
         temperature_kelvin - 273.15
     )
-
-    # ------------------------------------------------------------------
-    # Keep only useful variables
-    # ------------------------------------------------------------------
 
     result = (
         df[["valid_time", "temperature"]]
@@ -348,7 +317,7 @@ def read_era5_csv_zip(path: Path) -> pd.DataFrame:
 
 
 def cache_path(location: Location) -> Path:
-    """Return the local Parquet cache path for a location."""
+    """Return local Parquet cache path for a location."""
 
     safe_name = location.name.replace(" ", "_")
 
@@ -362,7 +331,7 @@ def update_era5_cache(
     location: Location,
 ) -> pd.DataFrame:
     """
-    Update the local ERA5 cache and return the complete hourly series.
+    Update local ERA5 cache and return the complete hourly series.
 
     First execution
     ---------------
@@ -370,11 +339,8 @@ def update_era5_cache(
 
     Subsequent executions
     ---------------------
-    Re-download the most recent REFRESH_DAYS and replace those values
+    Re-download the latest REFRESH_DAYS and overwrite that overlap
     in the cache.
-
-    This overlap allows recent ERA5T values to be refreshed if they
-    have subsequently been revised.
     """
 
     path = cache_path(location)
@@ -435,7 +401,7 @@ def update_era5_cache(
         download_start = START_DATE
 
     # ------------------------------------------------------------------
-    # Check whether there is anything to download
+    # Anything to download?
     # ------------------------------------------------------------------
 
     if download_start > latest_era5_date:
@@ -449,7 +415,7 @@ def update_era5_cache(
         return cached
 
     # ------------------------------------------------------------------
-    # Temporary ERA5 ZIP archive
+    # Temporary ZIP archive
     # ------------------------------------------------------------------
 
     with NamedTemporaryFile(
@@ -475,24 +441,25 @@ def update_era5_cache(
 
     finally:
 
-        # The ZIP archive is only a temporary transport format.
         temporary_path.unlink(
             missing_ok=True
         )
 
     # ------------------------------------------------------------------
-    # Merge with existing cache
+    # Merge cache + freshly downloaded data
     # ------------------------------------------------------------------
 
-    combined = pd.concat(
-        [
-            cached,
-            new_data,
-        ]
-    )
+    if cached.empty:
+        combined = new_data.copy()
 
-    # During the overlapping REFRESH_DAYS period, newly downloaded
-    # ERA5 values replace the older values in the cache.
+    else:
+        combined = pd.concat(
+            [
+                cached,
+                new_data,
+            ]
+        )
+
     combined = (
         combined
         .loc[
@@ -534,9 +501,7 @@ def check_hourly_data(
     df: pd.DataFrame,
 ) -> None:
     """
-    Perform basic quality-control checks on the hourly ERA5 series.
-
-    Missing hours generate a warning rather than terminating the program.
+    Perform basic QC checks on the hourly ERA5 series.
     """
 
     if df.empty:
@@ -596,8 +561,7 @@ def compute_daily_statistics(
     """
     Compute daily ERA5 mean, minimum and maximum temperatures.
 
-    Days are defined from 00:00 to 23:00 UTC, consistently with the
-    original script.
+    Days are defined from 00:00 to 23:00 UTC.
     """
 
     logger.info(
@@ -615,7 +579,6 @@ def compute_daily_statistics(
         )
     )
 
-    # A complete ERA5 day should contain exactly 24 hourly values.
     incomplete = (
         daily["count"] != 24
     )
@@ -641,15 +604,12 @@ def download_kmi_uccle() -> pd.DataFrame:
     """
     Download recent daily observations from KMI/IRM Uccle.
 
-    Returns
-    -------
-    pandas.DataFrame
-        Columns:
-            mean
-            min
-            max
-            count
-            source
+    Returns columns:
+        mean
+        min
+        max
+        count
+        source
     """
 
     logger.info(
@@ -665,17 +625,12 @@ def download_kmi_uccle() -> pd.DataFrame:
 
     rows = []
 
-    # Data lines start with a date formatted DD-MM-YYYY.
     for line in response.text.splitlines():
 
         fields = line.split()
 
         if not fields:
             continue
-
-        # --------------------------------------------------------------
-        # Date
-        # --------------------------------------------------------------
 
         try:
 
@@ -690,15 +645,6 @@ def download_kmi_uccle() -> pd.DataFrame:
             IndexError,
         ):
             continue
-
-        # --------------------------------------------------------------
-        # Temperature
-        #
-        # Columns:
-        #     1 -> Tmax
-        #     2 -> Tmin
-        #     3 -> Tmean
-        # --------------------------------------------------------------
 
         try:
 
@@ -741,7 +687,7 @@ def append_recent_kmi(
     location: Location,
 ) -> pd.DataFrame:
     """
-    Append KMI observations after the latest available ERA5 day.
+    Append KMI observations after the latest ERA5 day.
 
     ERA5 remains authoritative wherever both sources overlap.
     """
@@ -836,10 +782,6 @@ def compute_daily_climatology(
         & (daily["source"] == "ERA5")
     ].copy()
 
-    # ------------------------------------------------------------------
-    # Exclude February 29 only from climatology
-    # ------------------------------------------------------------------
-
     reference = reference.loc[
         ~(
             (reference.index.month == 2)
@@ -858,10 +800,6 @@ def compute_daily_climatology(
         .rename("climatology")
         .to_frame()
     )
-
-    # ------------------------------------------------------------------
-    # Explicit non-leap calendar
-    # ------------------------------------------------------------------
 
     calendar = pd.date_range(
         "2001-01-01",
@@ -887,10 +825,6 @@ def compute_daily_climatology(
             f"{missing}"
         )
 
-    # ------------------------------------------------------------------
-    # Circular smoothing
-    # ------------------------------------------------------------------
-
     values = (
         climatology["climatology"]
         .to_numpy()
@@ -913,7 +847,7 @@ def circular_rolling_mean(
     window: int,
 ) -> np.ndarray:
     """
-    Compute a centered circular moving average.
+    Compute centered circular moving average.
     """
 
     if window % 2 == 0:
@@ -956,7 +890,7 @@ def add_climatology_to_daily(
     climatology: pd.DataFrame,
 ) -> pd.DataFrame:
     """
-    Attach climatological mean and temperature anomaly to each daily value.
+    Attach climatological mean and anomaly to every daily value.
     """
 
     result = daily.copy()
@@ -974,13 +908,6 @@ def add_climatology_to_daily(
         result["calendar_day"]
         .map(lookup)
     )
-
-    # ------------------------------------------------------------------
-    # February 29
-    #
-    # Since the climatological calendar contains only 365 days, assign
-    # Feb 29 the mean of Feb 28 and Mar 1.
-    # ------------------------------------------------------------------
 
     feb29 = (
         (result.index.month == 2)
@@ -1018,14 +945,12 @@ def add_previous_records(
     daily: pd.DataFrame,
 ) -> pd.DataFrame:
     """
-    Compute the max/min record existing before each individual date.
+    Compute previous max/min record for each calendar day.
 
     Example
     -------
     ``previous_record_max`` for 15 August 2026 is the largest daily
-    maximum previously observed on any 15 August.
-
-    The current day itself is excluded by using ``shift(1)``.
+    maximum previously observed on any earlier 15 August.
     """
 
     logger.info(
@@ -1091,10 +1016,6 @@ def write_csv_files(
         location.name.replace(" ", "_")
     )
 
-    # ------------------------------------------------------------------
-    # Hourly
-    # ------------------------------------------------------------------
-
     hourly_out = (
         OUTPUT_DIR
         / f"hourly_T2M_{safe_name}.csv.gz"
@@ -1104,10 +1025,6 @@ def write_csv_files(
         hourly_out,
         compression="gzip",
     )
-
-    # ------------------------------------------------------------------
-    # Daily
-    # ------------------------------------------------------------------
 
     daily_out = (
         OUTPUT_DIR
@@ -1183,7 +1100,7 @@ def plot_climatology(
     climatology: pd.DataFrame,
 ) -> None:
     """
-    Plot the raw and smoothed annual temperature cycle.
+    Plot raw and smoothed annual temperature cycle.
     """
 
     fig, ax = plt.subplots(
@@ -1250,42 +1167,56 @@ def plot_climatology(
 
 
 # ============================================================================
-# Recent mean temperature figure
+# Generic temperature-period figure
 # ============================================================================
 
 
-def plot_recent_temperature(
+def plot_temperature_period(
     location: Location,
     daily: pd.DataFrame,
-    days: int = 365,
+    start: pd.Timestamp,
+    end: pd.Timestamp,
+    title: str,
+    output_path: Path,
+    xlim_end: pd.Timestamp | None = None,
 ) -> None:
     """
-    Plot the most recent year as anomalies around climatology.
+    Plot daily mean temperature over a specified period.
 
-    Filled bars
-        ERA5
+    The climatological seasonal cycle is drawn as a black dashed line.
 
-    Outlined bars
-        KMI
+    Daily anomalies are represented as bars:
+        blue = colder than climatology
+        red  = warmer than climatology
+
+    ERA5 bars are filled.
+    KMI bars are outlined.
     """
 
-    end = daily.index.max()
-
-    start = (
-        end
-        - pd.Timedelta(days=days)
-    )
-
     subset = daily.loc[
-        daily.index >= start
+        (daily.index >= start)
+        & (daily.index <= end)
     ].copy()
+
+    if subset.empty:
+
+        logger.warning(
+            "No daily data available between %s and %s.",
+            start,
+            end,
+        )
+
+        return
+
+    if xlim_end is None:
+        xlim_end = end
 
     fig, ax = plt.subplots(
         figsize=(10, 4.5)
     )
 
     # ------------------------------------------------------------------
-    # Climatology
+    # Climatological seasonal cycle
     # ------------------------------------------------------------------
 
     ax.plot(
@@ -1298,10 +1229,11 @@ def plot_recent_temperature(
             f"Climatology "
             f"({CLIMATOLOGY_START}–{CLIMATOLOGY_END})"
         ),
+        zorder=3,
     )
 
     # ------------------------------------------------------------------
-    # Temperature anomalies
+    # Daily anomalies
     # ------------------------------------------------------------------
 
     norm = Normalize(
@@ -1316,32 +1248,48 @@ def plot_recent_temperature(
 
     for timestamp, row in subset.iterrows():
 
+        anomaly = row["anomaly"]
+        climatology = row["climatology"]
+
+        if (
+            pd.isna(anomaly)
+            or pd.isna(climatology)
+        ):
+            continue
+
         color = cmap(
-            norm(row["anomaly"])
+            norm(anomaly)
         )
 
         if row["source"] == "ERA5":
 
             ax.bar(
                 timestamp,
-                row["anomaly"],
-                bottom=row["climatology"],
-                width=1,
+                anomaly,
+                bottom=climatology,
+                width=1.0,
                 color=color,
                 linewidth=0,
+                zorder=2,
             )
 
         else:
 
             ax.bar(
                 timestamp,
-                row["anomaly"],
-                bottom=row["climatology"],
-                width=1,
+                anomaly,
+                bottom=climatology,
+                width=1.0,
                 facecolor="none",
                 edgecolor=color,
                 linewidth=0.8,
+                linestyle="--",
+                zorder=2,
             )
+
+    # ------------------------------------------------------------------
+    # Formatting
+    # ------------------------------------------------------------------
 
     format_date_axis(ax)
 
@@ -1353,7 +1301,7 @@ def plot_recent_temperature(
 
     ax.set_xlim(
         start,
-        end + pd.Timedelta(days=5),
+        xlim_end,
     )
 
     ax.set_ylabel(
@@ -1361,20 +1309,15 @@ def plot_recent_temperature(
     )
 
     ax.set_title(
-        f"Daily mean 2-m air temperature – {location.name}"
+        title
     )
 
     ax.legend()
 
     fig.tight_layout()
 
-    path = (
-        FIGURE_DIR
-        / f"T2M_{location.name}_last365d.png"
-    )
-
     fig.savefig(
-        path,
+        output_path,
         dpi=300,
     )
 
@@ -1382,7 +1325,101 @@ def plot_recent_temperature(
 
     logger.info(
         "Written %s",
-        path,
+        output_path,
+    )
+
+
+# ============================================================================
+# Recent temperature figure
+# ============================================================================
+
+
+def plot_recent_temperature(
+    location: Location,
+    daily: pd.DataFrame,
+    days: int = 365,
+) -> None:
+    """
+    Plot the most recent ``days`` days using the standard temperature style.
+    """
+
+    end = daily.index.max()
+
+    start = (
+        end
+        - pd.Timedelta(days=days)
+    )
+
+    output_path = (
+        FIGURE_DIR
+        / f"T2M_{location.name}_last365d.png"
+    )
+
+    title = (
+        f"Daily mean 2-m air temperature\n"
+        f"{location.name}"
+    )
+
+    plot_temperature_period(
+        location=location,
+        daily=daily,
+        start=start,
+        end=end,
+        xlim_end=(
+            end
+            + pd.Timedelta(days=5)
+        ),
+        title=title,
+        output_path=output_path,
+    )
+
+
+# ============================================================================
+# Historical annual temperature figure
+# ============================================================================
+
+
+def plot_annual_year(
+    location: Location,
+    daily: pd.DataFrame,
+    year: int,
+) -> None:
+    """
+    Plot one calendar year using exactly the same graphical style
+    as the recent 365-day figure.
+    """
+
+    start = pd.Timestamp(
+        year=year,
+        month=1,
+        day=1,
+        tz="UTC",
+    )
+
+    end = pd.Timestamp(
+        year=year,
+        month=12,
+        day=31,
+        tz="UTC",
+    )
+
+    output_path = (
+        FIGURE_DIR
+        / f"T2M_{location.name}_{year}.png"
+    )
+
+    title = (
+        f"Daily mean 2-m air temperature\n"
+        f"{location.name}, {year}"
+    )
+
+    plot_temperature_period(
+        location=location,
+        daily=daily,
+        start=start,
+        end=end,
+        title=title,
+        output_path=output_path,
     )
 
 
@@ -1415,10 +1452,7 @@ def plot_recent_minmax(
         figsize=(10, 4.5)
     )
 
-    # ------------------------------------------------------------------
-    # Historical record envelope
-    # ------------------------------------------------------------------
-
+    # Historical record envelope.
     ax.fill_between(
         subset.index,
         subset["previous_record_min"],
@@ -1427,10 +1461,7 @@ def plot_recent_minmax(
         label="Previous historical min–max",
     )
 
-    # ------------------------------------------------------------------
-    # Current daily range
-    # ------------------------------------------------------------------
-
+    # Current daily range.
     ax.vlines(
         subset.index,
         subset["min"],
@@ -1446,10 +1477,6 @@ def plot_recent_minmax(
         linewidth=0.8,
         label="Daily mean",
     )
-
-    # ------------------------------------------------------------------
-    # Record-breaking observations
-    # ------------------------------------------------------------------
 
     highs = subset.loc[
         subset["record_high"]
@@ -1485,12 +1512,17 @@ def plot_recent_minmax(
         linewidth=0.6,
     )
 
+    ax.set_xlim(
+        start,
+        end + pd.Timedelta(days=5),
+    )
+
     ax.set_ylabel(
         "Temperature (°C)"
     )
 
     ax.set_title(
-        f"Daily minimum and maximum 2-m temperature – "
+        f"Daily minimum and maximum 2-m temperature\n"
         f"{location.name}"
     )
 
@@ -1519,87 +1551,6 @@ def plot_recent_minmax(
 
 
 # ============================================================================
-# Annual figure
-# ============================================================================
-
-
-def plot_annual_year(
-    location: Location,
-    daily: pd.DataFrame,
-    year: int,
-) -> None:
-    """
-    Produce one annual mean/min/max temperature plot.
-    """
-
-    subset = daily.loc[
-        daily.index.year == year
-    ]
-
-    if subset.empty:
-        return
-
-    fig, ax = plt.subplots(
-        figsize=(9, 4)
-    )
-
-    ax.plot(
-        subset.index,
-        subset["mean"],
-        label="Daily mean",
-    )
-
-    ax.plot(
-        subset.index,
-        subset["min"],
-        linewidth=0.7,
-        label="Daily minimum",
-    )
-
-    ax.plot(
-        subset.index,
-        subset["max"],
-        linewidth=0.7,
-        label="Daily maximum",
-    )
-
-    ax.plot(
-        subset.index,
-        subset["climatology"],
-        linestyle="--",
-        linewidth=1,
-        label="Climatology",
-    )
-
-    format_date_axis(ax)
-
-    ax.set_ylabel(
-        "Temperature (°C)"
-    )
-
-    ax.set_title(
-        f"ERA5 daily 2-m temperature – "
-        f"{location.name}, {year}"
-    )
-
-    ax.legend()
-
-    fig.tight_layout()
-
-    path = (
-        FIGURE_DIR
-        / f"T2M_{location.name}_{year}.png"
-    )
-
-    fig.savefig(
-        path,
-        dpi=200,
-    )
-
-    plt.close(fig)
-
-
-# ============================================================================
 # Main processing chain
 # ============================================================================
 
@@ -1609,7 +1560,7 @@ def process_location(
     make_historical_figures: bool = False,
 ) -> None:
     """
-    Run the complete processing chain for one location.
+    Run complete processing chain for one location.
     """
 
     logger.info(
@@ -1625,35 +1576,23 @@ def process_location(
         "=" * 70
     )
 
-    # ------------------------------------------------------------------
-    # ERA5 hourly data
-    # ------------------------------------------------------------------
-
+    # ERA5 hourly data.
     hourly = update_era5_cache(
         location
     )
 
-    # ------------------------------------------------------------------
-    # Daily statistics
-    # ------------------------------------------------------------------
-
+    # Daily statistics.
     daily = compute_daily_statistics(
         hourly
     )
 
-    # ------------------------------------------------------------------
-    # Optional recent KMI observations
-    # ------------------------------------------------------------------
-
+    # Recent KMI/IRM observations.
     daily = append_recent_kmi(
         daily=daily,
         location=location,
     )
 
-    # ------------------------------------------------------------------
-    # Climatology
-    # ------------------------------------------------------------------
-
+    # Climatology.
     climatology = compute_daily_climatology(
         daily
     )
@@ -1663,28 +1602,19 @@ def process_location(
         climatology,
     )
 
-    # ------------------------------------------------------------------
-    # Historical records
-    # ------------------------------------------------------------------
-
+    # Historical records.
     daily = add_previous_records(
         daily
     )
 
-    # ------------------------------------------------------------------
-    # CSV output
-    # ------------------------------------------------------------------
-
+    # CSV outputs.
     write_csv_files(
         location=location,
         hourly=hourly,
         daily=daily,
     )
 
-    # ------------------------------------------------------------------
-    # Figures
-    # ------------------------------------------------------------------
-
+    # Figures.
     plot_climatology(
         location,
         climatology,
@@ -1700,10 +1630,7 @@ def process_location(
         daily,
     )
 
-    # ------------------------------------------------------------------
-    # Historical annual figures
-    # ------------------------------------------------------------------
-
+    # Historical annual figures.
     if make_historical_figures:
 
         first_year = (
