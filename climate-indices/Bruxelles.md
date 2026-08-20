@@ -24,7 +24,7 @@ Les données brutes servant à produire les figures ci-dessus sont téléchargea
 
 ## Données brutes et statistiques
 
-**[Données à l'échelle horaire (Clic droit + Enregistrer)](./output/hourly_T2M_Bruxelles.csv)**
+**[Données à l'échelle horaire (Clic droit + Enregistrer)](./output/hourly_T2M_Bruxelles.csv.gz)**
 
 **[Données agrégées à l'échelle journalière (moyenne, minimum, maximum) (Clic droit + Enregistrer)](./output/dailyStatistics_T2m_Bruxelles.csv)**
 
