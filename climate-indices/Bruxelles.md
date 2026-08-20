@@ -3,7 +3,7 @@
 <img src="./figures/T2M_Bruxelles_last365d.png" width="1200">
 </p>
 
-_Pour la même figure sur les  années précédentes, voir [ici](./T2MAllYears_Bruxelles.md)_
+_Pour la même figure sur les  années précédentes, voir [ici](./T2MAllYears_Bruxelles)_
 
 <br>
 <br>
@@ -28,7 +28,7 @@ Les données brutes servant à produire les figures ci-dessus sont téléchargea
 
 **[Données agrégées à l'échelle journalière (moyenne, minimum, maximum) (Clic droit + Enregistrer)](./output/dailyStatistics_T2m_Bruxelles.csv)**
 
-Le script (Python3) qui produit ces données est disponible [ici](./scripts/analysis_T2m.py)
+Le script (Python3) qui produit ces données est disponible [ici](./era5_temperature.py)
 
 ## Autres lieux
 (A continuer)
