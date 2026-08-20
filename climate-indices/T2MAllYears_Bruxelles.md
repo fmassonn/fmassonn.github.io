@@ -1,4 +1,10 @@
 <p align="center">
+<h1> 2025 </h1>
+<img src="./figures/T2M_Bruxelles_2025.png" width="1200">
+<br>
+<h1> 2024 </h1>
+<img src="./figures/T2M_Bruxelles_2024.png" width="1200">
+<br>
 <h1> 2023 </h1>
 <img src="./figures/T2M_Bruxelles_2023.png" width="1200">
 <br>
