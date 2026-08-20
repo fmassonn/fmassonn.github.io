@@ -1747,7 +1747,7 @@ def main() -> None:
 
             process_location(
                 location,
-                make_historical_figures=False,
+                make_historical_figures=True,
             )
 
         except Exception:
