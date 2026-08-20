@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="./figs/T2m_Bruxelles_last365d.png" width="1200">
+<img src="./figures/T2m_Bruxelles_last365d.png" width="1200">
 </p>
 
 _Pour la même figure sur les  années précédentes, voir [ici](./T2mAllYears_Bruxelles.md)_
@@ -8,7 +8,7 @@ _Pour la même figure sur les  années précédentes, voir [ici](./T2mAllYears_B
 <br>
 <br>
 <p>
-<img src="./figs/T2m_MinMax_Bruxelles_last365d.png" width="1200">
+<img src="./figures/T2m_MinMax_Bruxelles_last365d.png" width="1200">
 </p>
 
 
