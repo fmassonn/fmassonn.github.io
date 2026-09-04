@@ -38,7 +38,7 @@ from __future__ import annotations
 import logging
 import zipfile
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
