@@ -215,6 +215,36 @@ def read_era5_csv(path: Path) -> pd.DataFrame:
             f"Available columns: {list(df.columns)}"
         )
 
+    # The ERA5 pressure-level time-series product currently returns all
+    # available pressure levels in the CSV, even when one level is requested.
+    # Keep only the requested 500-hPa level before doing any averaging.
+    level_column = None
+    for candidate in ("pressure_level", "level", "isobaricInhPa"):
+        if candidate in df.columns:
+            level_column = candidate
+            break
+
+    if level_column is None:
+        raise ValueError(
+            "Could not identify the pressure-level column in the ERA5 CSV.\n"
+            f"Available columns: {list(df.columns)}"
+        )
+
+    levels = pd.to_numeric(df[level_column], errors="coerce")
+    df = df.loc[levels == float(PRESSURE_LEVEL)].copy()
+
+    if df.empty:
+        raise ValueError(
+            f"No data found at {PRESSURE_LEVEL} hPa in ERA5 CSV."
+        )
+
+    logger.info(
+        "Selected %s hPa from column %s (%d rows).",
+        PRESSURE_LEVEL,
+        level_column,
+        len(df),
+    )
+
     df["valid_time"] = pd.to_datetime(
         df["valid_time"],
         utc=True,
