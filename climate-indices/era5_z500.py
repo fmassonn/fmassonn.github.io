@@ -5,24 +5,25 @@ Author
 ------
 François Massonnet
 
-Adapted in September 2026 with assistance from ChatGPT from the ERA5 2-m
-temperature script.
+Adapted from the ERA5 2-m temperature script in September 2026,
+with assistance from ChatGPT.
 
 Description
 -----------
-The script retrieves ERA5 geopotential at 500 hPa for one or several point
-locations, stores the data in a local cache, converts geopotential (m2 s-2) to
-geopotential height (gpm), computes daily means and a 1991-2020 daily
-climatology, and produces CSV files and diagnostic figures.
+The script retrieves ERA5 geopotential time series on pressure levels for
+one or several point locations, keeps only the 500-hPa level, converts
+geopotential (m2 s-2) to geopotential height (m), stores the data in a local
+cache, computes daily and climatological statistics, and produces CSV files
+and diagnostic figures.
 
 ERA5 data source
 ----------------
 Copernicus Climate Data Store:
     reanalysis-era5-pressure-levels-timeseries
 
-The time-series product is optimized for retrieving long ERA5 series at a
-single geographical point. At pressure levels it currently provides values at
-00, 06, 12 and 18 UTC.
+The time-series product is optimized for long records at a single point.
+It is 6-hourly (00, 06, 12, 18 UTC) and returns 13 pressure levels.  The CSV
+reader below explicitly filters pressureLevel == 500 hPa.
 """
 
 from __future__ import annotations
@@ -30,7 +31,7 @@ from __future__ import annotations
 import logging
 import zipfile
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta, datetime
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -48,11 +49,11 @@ from matplotlib.colors import Normalize
 
 ERA5_DATASET = "reanalysis-era5-pressure-levels-timeseries"
 ERA5_VARIABLE = "geopotential"
-PRESSURE_LEVEL = "500"
+PRESSURE_LEVEL = 500.0  # hPa
 
-# Standard gravity used to convert geopotential (m2 s-2) to geopotential
-# height (m, conventionally reported as geopotential metres or gpm).
-G0 = 9.80665
+# Standard gravity used to convert geopotential Phi [m2 s-2]
+# to geopotential height Z = Phi / g0 [m].
+STANDARD_GRAVITY = 9.80665
 
 START_DATE = date(1940, 1, 1)
 
@@ -62,8 +63,8 @@ ERA5_LAG_DAYS = 5
 CLIMATOLOGY_START = 1991
 CLIMATOLOGY_END = 2020
 
-# Re-download this recent period on every run so that ERA5T values can be
-# replaced by consolidated ERA5 values when needed.
+# Re-download this recent period on every run, so preliminary ERA5T values
+# can be replaced by consolidated ERA5 values when necessary.
 REFRESH_DAYS = 120
 
 CLIMATOLOGY_SMOOTHING_DAYS = 61
@@ -124,11 +125,10 @@ def download_era5(
     end_date: date,
     target: Path,
 ) -> None:
-    """Download ERA5 500-hPa geopotential for one point."""
+    """Download ERA5 pressure-level geopotential time series for one point."""
 
     request = {
         "variable": [ERA5_VARIABLE],
-        "pressure_level": [PRESSURE_LEVEL],
         "date": [
             start_date.isoformat(),
             end_date.isoformat(),
@@ -141,14 +141,18 @@ def download_era5(
     }
 
     logger.info(
-        "Downloading ERA5 Z500 for %s: %s -> %s",
+        "Downloading ERA5 pressure-level geopotential for %s: %s -> %s",
         location.name,
         start_date,
         end_date,
     )
 
     client = cdsapi.Client()
-    client.retrieve(ERA5_DATASET, request, str(target))
+    client.retrieve(
+        ERA5_DATASET,
+        request,
+        str(target),
+    )
 
 
 # ============================================================================
@@ -158,16 +162,25 @@ def download_era5(
 
 def read_era5_csv(path: Path) -> pd.DataFrame:
     """
-    Read ERA5 500-hPa geopotential from a CDS CSV download.
+    Read ERA5 geopotential from a CDS CSV response and retain 500 hPa only.
 
-    Depending on the CDS backend, the requested CSV may be returned either
-    directly as a CSV file or packaged inside a ZIP archive. Both cases are
-    supported here.
+    Depending on the CDS backend, the response may be either a plain CSV
+    file or a ZIP archive containing a CSV file.
 
-    ERA5 geopotential ``z`` is stored in m2 s-2. It is converted here to
-    geopotential height by division by standard gravity, G0 = 9.80665 m s-2.
-    The resulting unit is metres, conventionally called geopotential metres
-    (gpm).
+    Expected CSV columns include:
+        valid_time
+        pressureLevel
+        z
+        latitude
+        longitude
+
+    ``z`` is geopotential in m2 s-2. It is converted to geopotential height
+    in metres using Z = z / 9.80665.
+
+    Returns
+    -------
+    pandas.DataFrame
+        UTC DatetimeIndex and one column named ``z500`` in metres.
     """
 
     if not path.exists():
@@ -192,20 +205,15 @@ def read_era5_csv(path: Path) -> pd.DataFrame:
                 )
 
             csv_name = csv_files[0]
-            logger.info("Reading ERA5 CSV from ZIP: %s", csv_name)
+            logger.info("Reading ERA5 CSV from ZIP archive: %s", csv_name)
 
             with archive.open(csv_name) as csv_file:
                 df = pd.read_csv(csv_file)
     else:
-        logger.info("Reading ERA5 direct CSV download: %s", path.name)
-        try:
-            df = pd.read_csv(path)
-        except Exception as exc:
-            raise ValueError(
-                f"Downloaded ERA5 file is neither a readable CSV nor a ZIP archive: {path}"
-            ) from exc
+        logger.info("Reading ERA5 response as a plain CSV file.")
+        df = pd.read_csv(path)
 
-    required_columns = {"valid_time", "z"}
+    required_columns = {"valid_time", "pressureLevel", "z"}
     missing_columns = required_columns - set(df.columns)
 
     if missing_columns:
@@ -215,35 +223,16 @@ def read_era5_csv(path: Path) -> pd.DataFrame:
             f"Available columns: {list(df.columns)}"
         )
 
-    # The ERA5 pressure-level time-series product currently returns all
-    # available pressure levels in the CSV, even when one level is requested.
-    # Keep only the requested 500-hPa level before doing any averaging.
-    level_column = None
-    for candidate in ("pressure_level", "level", "isobaricInhPa"):
-        if candidate in df.columns:
-            level_column = candidate
-            break
-
-    if level_column is None:
-        raise ValueError(
-            "Could not identify the pressure-level column in the ERA5 CSV.\n"
-            f"Available columns: {list(df.columns)}"
-        )
-
-    levels = pd.to_numeric(df[level_column], errors="coerce")
-    df = df.loc[levels == float(PRESSURE_LEVEL)].copy()
+    # Pressure level may be read as either integer or float.
+    pressure = pd.to_numeric(df["pressureLevel"], errors="coerce")
+    available = sorted(pressure.dropna().unique())
+    df = df.loc[np.isclose(pressure, PRESSURE_LEVEL)].copy()
 
     if df.empty:
         raise ValueError(
-            f"No data found at {PRESSURE_LEVEL} hPa in ERA5 CSV."
+            f"No {PRESSURE_LEVEL:g}-hPa values found. "
+            f"Available pressure levels: {available}"
         )
-
-    logger.info(
-        "Selected %s hPa from column %s (%d rows).",
-        PRESSURE_LEVEL,
-        level_column,
-        len(df),
-    )
 
     df["valid_time"] = pd.to_datetime(
         df["valid_time"],
@@ -263,7 +252,7 @@ def read_era5_csv(path: Path) -> pd.DataFrame:
             geopotential.isna().sum(),
         )
 
-    df["z500"] = geopotential / G0
+    df["z500"] = geopotential / STANDARD_GRAVITY
 
     result = (
         df[["valid_time", "z500"]]
@@ -306,7 +295,6 @@ def update_era5_cache(location: Location) -> pd.DataFrame:
             START_DATE,
             last_cached_date - timedelta(days=REFRESH_DAYS),
         )
-
     else:
         logger.info("No ERA5 cache found for %s", location.name)
         cached = pd.DataFrame(
@@ -317,11 +305,11 @@ def update_era5_cache(location: Location) -> pd.DataFrame:
 
     if download_start > latest_era5_date:
         logger.info("ERA5 cache already contains all currently expected data.")
-        check_6hourly_data(cached)
+        check_six_hourly_data(cached)
         return cached
 
     with NamedTemporaryFile(
-        suffix=".tmp",
+        suffix=".download",
         delete=False,
         dir=DATA_DIR,
     ) as handle:
@@ -348,11 +336,11 @@ def update_era5_cache(location: Location) -> pd.DataFrame:
         .sort_index()
     )
 
-    check_6hourly_data(combined)
+    check_six_hourly_data(combined)
     combined.to_parquet(path)
 
     logger.info(
-        "ERA5 cache contains %d 6-hourly values (%s -> %s)",
+        "ERA5 cache contains %d six-hourly values (%s -> %s)",
         len(combined),
         combined.index.min(),
         combined.index.max(),
@@ -366,8 +354,8 @@ def update_era5_cache(location: Location) -> pd.DataFrame:
 # ============================================================================
 
 
-def check_6hourly_data(df: pd.DataFrame) -> None:
-    """Perform basic QC checks on the 6-hourly ERA5 series."""
+def check_six_hourly_data(df: pd.DataFrame) -> None:
+    """Perform basic QC checks on the 6-hourly ERA5 Z500 series."""
 
     if df.empty:
         raise ValueError("ERA5 dataset is empty.")
@@ -388,12 +376,12 @@ def check_6hourly_data(df: pd.DataFrame) -> None:
 
     if len(missing_times):
         logger.warning(
-            "%d 6-hourly timestamps are missing from the ERA5 series.",
+            "%d six-hourly timestamps are missing from the ERA5 series.",
             len(missing_times),
         )
 
-    # Broad physical sanity range for 500-hPa geopotential height.
-    suspicious = df["z500"].notna() & ~df["z500"].between(4500, 6500)
+    # Broad sanity limits for 500-hPa geopotential height.
+    suspicious = df["z500"].notna() & ~df["z500"].between(4000, 6500)
 
     if suspicious.any():
         logger.warning(
@@ -407,25 +395,26 @@ def check_6hourly_data(df: pd.DataFrame) -> None:
 # ============================================================================
 
 
-def compute_daily_statistics(hourly: pd.DataFrame) -> pd.DataFrame:
-    """
-    Compute daily mean 500-hPa geopotential height.
-
-    The time-series product supplies four analyses per day: 00, 06, 12 and
-    18 UTC. Days are defined in UTC.
-    """
+def compute_daily_statistics(six_hourly: pd.DataFrame) -> pd.DataFrame:
+    """Compute daily mean, minimum and maximum 500-hPa height."""
 
     logger.info("Computing daily statistics.")
 
-    daily = hourly["z500"].resample("1D").agg(
-        mean="mean",
-        count="count",
+    daily = (
+        six_hourly["z500"]
+        .resample("1D")
+        .agg(
+            mean="mean",
+            min="min",
+            max="max",
+            count="count",
+        )
     )
 
     incomplete = daily["count"] != 4
     if incomplete.any():
         logger.warning(
-            "%d incomplete ERA5 days detected.",
+            "%d incomplete ERA5 days detected (expected 4 values/day).",
             incomplete.sum(),
         )
 
@@ -438,7 +427,6 @@ def compute_daily_statistics(hourly: pd.DataFrame) -> pd.DataFrame:
 
 
 def calendar_day(index: pd.DatetimeIndex) -> pd.Index:
-    """Return calendar-day labels such as ``01-31`` or ``12-25``."""
     return index.strftime("%m-%d")
 
 
@@ -448,11 +436,8 @@ def circular_rolling_mean(values: np.ndarray, window: int) -> np.ndarray:
 
     if window % 2 == 0:
         raise ValueError("Smoothing window must be odd.")
-
     if window > len(values):
-        raise ValueError(
-            "Smoothing window cannot exceed the length of the series."
-        )
+        raise ValueError("Smoothing window cannot exceed series length.")
 
     half = window // 2
     padded = np.concatenate([values[-half:], values, values[:half]])
@@ -476,11 +461,7 @@ def compute_daily_climatology(
 ) -> pd.DataFrame:
     """Compute raw and circularly smoothed 365-day Z500 climatology."""
 
-    logger.info(
-        "Computing daily climatology %d-%d.",
-        year_start,
-        year_end,
-    )
+    logger.info("Computing daily climatology %d-%d.", year_start, year_end)
 
     reference = daily.loc[
         (daily.index.year >= year_start)
@@ -535,7 +516,7 @@ def add_climatology_to_daily(
     daily: pd.DataFrame,
     climatology: pd.DataFrame,
 ) -> pd.DataFrame:
-    """Attach climatological mean and anomaly to every daily value."""
+    """Attach climatological Z500 and anomaly to every daily value."""
 
     result = daily.copy()
     lookup = climatology["smoothed"].to_dict()
@@ -554,6 +535,33 @@ def add_climatology_to_daily(
         )
 
     result["anomaly"] = result["mean"] - result["climatology"]
+    return result
+
+
+# ============================================================================
+# Historical daily records
+# ============================================================================
+
+
+def add_previous_records(daily: pd.DataFrame) -> pd.DataFrame:
+    """Compute previous daily max/min records for each calendar day."""
+
+    logger.info("Computing historical daily records.")
+
+    result = daily.copy()
+    result["calendar_day"] = calendar_day(result.index)
+
+    result["previous_record_max"] = (
+        result.groupby("calendar_day")["max"]
+        .transform(lambda x: x.expanding().max().shift(1))
+    )
+    result["previous_record_min"] = (
+        result.groupby("calendar_day")["min"]
+        .transform(lambda x: x.expanding().min().shift(1))
+    )
+
+    result["record_high"] = result["max"] > result["previous_record_max"]
+    result["record_low"] = result["min"] < result["previous_record_min"]
 
     return result
 
@@ -572,16 +580,21 @@ def write_csv_files(
 
     safe_name = location.name.replace(" ", "_")
 
-    six_hourly_out = (
-        OUTPUT_DIR / f"6hourly_Z500_{safe_name}.csv.gz"
-    )
+    six_hourly_out = OUTPUT_DIR / f"six_hourly_Z500_{safe_name}.csv.gz"
+    daily_out = OUTPUT_DIR / f"daily_statistics_Z500_{safe_name}.csv"
+
     six_hourly.round(2).to_csv(
         six_hourly_out,
         compression="gzip",
     )
 
-    daily_out = OUTPUT_DIR / f"daily_Z500_{safe_name}.csv"
-    columns = ["mean", "climatology", "anomaly"]
+    columns = [
+        "mean",
+        "min",
+        "max",
+        "climatology",
+        "anomaly",
+    ]
     daily[columns].round(2).to_csv(daily_out)
 
     logger.info("Written %s", six_hourly_out)
@@ -594,8 +607,6 @@ def write_csv_files(
 
 
 def format_date_axis(ax: plt.Axes) -> None:
-    """Apply common formatting to a date axis."""
-
     ax.xaxis.set_major_locator(mdates.MonthLocator())
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b %y"))
     ax.tick_params(axis="x", rotation=45)
@@ -632,15 +643,14 @@ def plot_climatology(
     ax.xaxis.set_major_locator(mdates.MonthLocator())
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
     ax.grid(alpha=0.3)
-    ax.set_ylabel("500-hPa geopotential height (gpm)")
+    ax.set_ylabel("500-hPa geopotential height (m)")
     ax.set_title(
-        f"ERA5 daily Z500 climatology – {location.name}\n"
+        f"ERA5 daily 500-hPa geopotential height climatology – {location.name}\n"
         f"{CLIMATOLOGY_START}–{CLIMATOLOGY_END}"
     )
     ax.legend()
 
     fig.tight_layout()
-
     path = FIGURE_DIR / f"climatology_Z500_{location.name}.png"
     fig.savefig(path, dpi=200)
     plt.close(fig)
@@ -662,7 +672,7 @@ def plot_z500_period(
     output_path: Path,
     xlim_end: pd.Timestamp | None = None,
 ) -> None:
-    """Plot daily mean Z500 and anomalies over a specified period."""
+    """Plot daily mean Z500 and its anomaly relative to climatology."""
 
     subset = daily.loc[
         (daily.index >= start)
@@ -670,11 +680,7 @@ def plot_z500_period(
     ].copy()
 
     if subset.empty:
-        logger.warning(
-            "No daily data available between %s and %s.",
-            start,
-            end,
-        )
+        logger.warning("No daily data available between %s and %s.", start, end)
         return
 
     if xlim_end is None:
@@ -688,15 +694,11 @@ def plot_z500_period(
         linestyle="--",
         linewidth=1.2,
         color="black",
-        label=(
-            f"Climatology "
-            f"({CLIMATOLOGY_START}–{CLIMATOLOGY_END})"
-        ),
+        label=f"Climatology ({CLIMATOLOGY_START}–{CLIMATOLOGY_END})",
         zorder=3,
     )
 
-    # A +/- 250 gpm range captures most daily Z500 anomalies over Brussels
-    # while retaining contrast for synoptic variability.
+    # A +/- 250 m range gives useful colour contrast for synoptic Z500 anomalies.
     norm = Normalize(vmin=-250, vmax=250, clip=True)
     cmap = plt.get_cmap("RdBu_r")
 
@@ -719,7 +721,7 @@ def plot_z500_period(
 
     format_date_axis(ax)
     ax.set_xlim(start, xlim_end)
-    ax.set_ylabel("500-hPa geopotential height (gpm)")
+    ax.set_ylabel("500-hPa geopotential height (m)")
     ax.set_title(title)
     ax.legend()
 
@@ -731,7 +733,7 @@ def plot_z500_period(
 
 
 # ============================================================================
-# Recent figure
+# Recent Z500 figure
 # ============================================================================
 
 
@@ -740,16 +742,12 @@ def plot_recent_z500(
     daily: pd.DataFrame,
     days: int = 365,
 ) -> None:
-    """Plot the most recent ``days`` days."""
-
     end = daily.index.max()
     start = end - pd.Timedelta(days=days)
 
-    output_path = (
-        FIGURE_DIR / f"Z500_{location.name}_last365d.png"
-    )
-
+    output_path = FIGURE_DIR / f"Z500_{location.name}_last365d.png"
     creation_date = datetime.now().strftime("%d/%m/%Y")
+
     title = (
         "Daily mean 500-hPa geopotential height\n"
         f"{location.name} — Figure created on {creation_date}"
@@ -767,7 +765,7 @@ def plot_recent_z500(
 
 
 # ============================================================================
-# Historical annual figures
+# Historical annual Z500 figure
 # ============================================================================
 
 
@@ -776,8 +774,6 @@ def plot_annual_year(
     daily: pd.DataFrame,
     year: int,
 ) -> None:
-    """Plot one calendar year using the same style as the recent figure."""
-
     start = pd.Timestamp(year=year, month=1, day=1, tz="UTC")
     end = pd.Timestamp(year=year, month=12, day=31, tz="UTC")
 
@@ -795,6 +791,81 @@ def plot_annual_year(
         title=title,
         output_path=output_path,
     )
+
+
+# ============================================================================
+# Recent minimum / maximum figure
+# ============================================================================
+
+
+def plot_recent_minmax(
+    location: Location,
+    daily: pd.DataFrame,
+    days: int = 365,
+) -> None:
+    end = daily.index.max()
+    start = end - pd.Timedelta(days=days)
+    subset = daily.loc[daily.index >= start].copy()
+
+    fig, ax = plt.subplots(figsize=(10, 4.5))
+
+    ax.fill_between(
+        subset.index,
+        subset["previous_record_min"],
+        subset["previous_record_max"],
+        alpha=0.18,
+        label="Previous historical min–max",
+    )
+    ax.vlines(
+        subset.index,
+        subset["min"],
+        subset["max"],
+        linewidth=1,
+        alpha=0.7,
+        label="Daily 6-hourly min–max",
+    )
+    ax.plot(
+        subset.index,
+        subset["mean"],
+        linewidth=0.8,
+        label="Daily mean",
+    )
+
+    highs = subset.loc[subset["record_high"]]
+    lows = subset.loc[subset["record_low"]]
+
+    ax.scatter(
+        highs.index,
+        highs["max"],
+        marker="*",
+        s=30,
+        zorder=5,
+        label="New record high",
+    )
+    ax.scatter(
+        lows.index,
+        lows["min"],
+        marker="*",
+        s=30,
+        zorder=5,
+        label="New record low",
+    )
+
+    format_date_axis(ax)
+    ax.set_xlim(start, end + pd.Timedelta(days=5))
+    ax.set_ylabel("500-hPa geopotential height (m)")
+    ax.set_title(
+        "Daily minimum and maximum 500-hPa geopotential height\n"
+        f"{location.name}"
+    )
+    ax.legend(fontsize=8)
+
+    fig.tight_layout()
+    path = FIGURE_DIR / f"Z500_MinMax_{location.name}_last365d.png"
+    fig.savefig(path, dpi=300)
+    plt.close(fig)
+
+    logger.info("Written %s", path)
 
 
 # ============================================================================
@@ -817,6 +888,7 @@ def process_location(
 
     climatology = compute_daily_climatology(daily)
     daily = add_climatology_to_daily(daily, climatology)
+    daily = add_previous_records(daily)
 
     write_csv_files(
         location=location,
@@ -826,6 +898,7 @@ def process_location(
 
     plot_climatology(location, climatology)
     plot_recent_z500(location, daily)
+    plot_recent_minmax(location, daily)
 
     if make_historical_figures:
         first_year = daily.index.year.min()
@@ -842,8 +915,6 @@ def process_location(
 
 
 def main() -> None:
-    """Run the analysis for all configured locations."""
-
     for location in LOCATIONS:
         try:
             process_location(
@@ -851,10 +922,7 @@ def main() -> None:
                 make_historical_figures=True,
             )
         except Exception:
-            logger.exception(
-                "Processing failed for %s",
-                location.name,
-            )
+            logger.exception("Processing failed for %s", location.name)
 
 
 if __name__ == "__main__":
