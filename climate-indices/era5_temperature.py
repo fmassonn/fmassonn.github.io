@@ -1355,9 +1355,12 @@ def plot_recent_temperature(
         / f"T2M_{location.name}_last365d.png"
     )
 
+
+    creation_date = datetime.now().strftime("%d/%m/%Y")
+
     title = (
-        f"Daily mean 2-m air temperature\n"
-        f"{location.name}"
+    f"Daily mean 2-m air temperature\n"
+    f"{location.name} — Figure created on {creation_date}"
     )
 
     plot_temperature_period(
