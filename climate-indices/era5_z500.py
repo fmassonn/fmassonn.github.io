@@ -156,9 +156,13 @@ def download_era5(
 # ============================================================================
 
 
-def read_era5_csv_zip(path: Path) -> pd.DataFrame:
+def read_era5_csv(path: Path) -> pd.DataFrame:
     """
-    Read ERA5 500-hPa geopotential from a CDS ZIP archive.
+    Read ERA5 500-hPa geopotential from a CDS CSV download.
+
+    Depending on the CDS backend, the requested CSV may be returned either
+    directly as a CSV file or packaged inside a ZIP archive. Both cases are
+    supported here.
 
     ERA5 geopotential ``z`` is stored in m2 s-2. It is converted here to
     geopotential height by division by standard gravity, G0 = 9.80665 m s-2.
@@ -167,35 +171,39 @@ def read_era5_csv_zip(path: Path) -> pd.DataFrame:
     """
 
     if not path.exists():
-        raise FileNotFoundError(f"ERA5 archive does not exist: {path}")
+        raise FileNotFoundError(f"ERA5 download does not exist: {path}")
 
-    if not zipfile.is_zipfile(path):
-        raise ValueError(
-            f"Downloaded ERA5 file is not a valid ZIP archive: {path}"
-        )
+    if zipfile.is_zipfile(path):
+        with zipfile.ZipFile(path, "r") as archive:
+            csv_files = [
+                name
+                for name in archive.namelist()
+                if name.lower().endswith(".csv")
+            ]
 
-    with zipfile.ZipFile(path, "r") as archive:
-        csv_files = [
-            name
-            for name in archive.namelist()
-            if name.lower().endswith(".csv")
-        ]
+            if not csv_files:
+                raise ValueError(f"No CSV file found in ERA5 archive {path}.")
 
-        if not csv_files:
-            raise ValueError(f"No CSV file found in ERA5 archive {path}.")
+            if len(csv_files) > 1:
+                logger.warning(
+                    "Several CSV files found in ERA5 archive: %s. Using %s.",
+                    csv_files,
+                    csv_files[0],
+                )
 
-        if len(csv_files) > 1:
-            logger.warning(
-                "Several CSV files found in ERA5 archive: %s. Using %s.",
-                csv_files,
-                csv_files[0],
-            )
+            csv_name = csv_files[0]
+            logger.info("Reading ERA5 CSV from ZIP: %s", csv_name)
 
-        csv_name = csv_files[0]
-        logger.info("Reading ERA5 CSV: %s", csv_name)
-
-        with archive.open(csv_name) as csv_file:
-            df = pd.read_csv(csv_file)
+            with archive.open(csv_name) as csv_file:
+                df = pd.read_csv(csv_file)
+    else:
+        logger.info("Reading ERA5 direct CSV download: %s", path.name)
+        try:
+            df = pd.read_csv(path)
+        except Exception as exc:
+            raise ValueError(
+                f"Downloaded ERA5 file is neither a readable CSV nor a ZIP archive: {path}"
+            ) from exc
 
     required_columns = {"valid_time", "z"}
     missing_columns = required_columns - set(df.columns)
@@ -283,7 +291,7 @@ def update_era5_cache(location: Location) -> pd.DataFrame:
         return cached
 
     with NamedTemporaryFile(
-        suffix=".zip",
+        suffix=".tmp",
         delete=False,
         dir=DATA_DIR,
     ) as handle:
@@ -296,7 +304,7 @@ def update_era5_cache(location: Location) -> pd.DataFrame:
             end_date=latest_era5_date,
             target=temporary_path,
         )
-        new_data = read_era5_csv_zip(temporary_path)
+        new_data = read_era5_csv(temporary_path)
     finally:
         temporary_path.unlink(missing_ok=True)
 
