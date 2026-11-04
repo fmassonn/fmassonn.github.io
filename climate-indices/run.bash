@@ -1,6 +1,7 @@
 #!/bin/bash
 
-/opt/easybuild/soft/2025b/software/Python/3.13.5-GCCcore-14.3.0/bin/python3 era5_temperature.py
+
+/opt/easybuild/soft/2025b/software/ELIC_Python/1-foss-2025b/bin/python3 era5_temperature.py
 
 git add -A
 git commit -m "Daily update"
