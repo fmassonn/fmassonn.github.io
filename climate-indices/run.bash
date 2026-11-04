@@ -1,6 +1,6 @@
 #!/bin/bash
 
-testa era5_temperature.py
+python3 era5_temperature.py
 
 git add -A
 git commit -m "Daily update"
