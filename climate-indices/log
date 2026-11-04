@@ -1,4 +1,1 @@
-Traceback (most recent call last):
-  File "/home/elic/fmasson/git/fmassonn.github.io/climate-indices/era5_temperature.py", line 45, in <module>
-    import cdsapi
-ModuleNotFoundError: No module named 'cdsapi'
+./run.bash: line 3: testa: command not found
