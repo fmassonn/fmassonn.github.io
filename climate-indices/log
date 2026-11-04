@@ -1,8 +1,11 @@
+./run.bash: line 3: module: command not found
+/home/elic/fmasson/module_load.txt: line 1: module: command not found
+/home/elic/fmasson/module_load.txt: line 2: module: command not found
+/home/elic/fmasson/module_load.txt: line 3: module: command not found
+/home/elic/fmasson/module_load.txt: line 4: module: command not found
+/home/elic/fmasson/module_load.txt: line 5: module: command not found
+/home/elic/fmasson/module_load.txt: line 6: module: command not found
 Traceback (most recent call last):
   File "/home/elic/fmasson/git/fmassonn.github.io/climate-indices/era5_temperature.py", line 44, in <module>
     import cdsapi
 ModuleNotFoundError: No module named 'cdsapi'
-[main 473dd5f] Daily update
- 4 files changed, 9 insertions(+), 7 deletions(-)
-To github.com:fmassonn/fmassonn.github.io.git
-   aafd160..473dd5f  main -> main
