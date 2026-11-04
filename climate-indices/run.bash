@@ -2,9 +2,7 @@
 
 #!/bin/bash
 
-cd /home/elic/fmasson/git/fmassonn.github.io/climate-indices
-
-export PYTHONPATH=/opt/easybuild/soft/2025b/software/ELIC_Python/1-foss-2025b/lib/python3.13/site-packages
+source ~/module_load.txt
 
 python3 era5_temperature.py
 
