@@ -32,7 +32,6 @@ ERA5 CSV downloads are delivered by the CDS as ZIP archives. The CSV file
 inside the archive is read directly into pandas without being extracted
 permanently to disk.
 """
-
 from __future__ import annotations
 
 import logging
@@ -50,6 +49,10 @@ import pandas as pd
 import requests
 from matplotlib.colors import Normalize
 
+import sys
+print("Python executable:", sys.executable)
+print("Python version:", sys.version)
+print("Python path:", sys.path)
 
 # ============================================================================
 # Configuration

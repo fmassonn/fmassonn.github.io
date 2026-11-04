@@ -1,5 +1,4 @@
-./run.bash: line 3: testa: command not found
-[main 46c8570] Daily update
- 2 files changed, 2 insertions(+), 5 deletions(-)
-To github.com:fmassonn/fmassonn.github.io.git
-   3dd72cf..46c8570  main -> main
+Traceback (most recent call last):
+  File "/home/elic/fmasson/git/fmassonn.github.io/climate-indices/era5_temperature.py", line 44, in <module>
+    import cdsapi
+ModuleNotFoundError: No module named 'cdsapi'
