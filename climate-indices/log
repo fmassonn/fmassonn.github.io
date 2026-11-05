@@ -5,6 +5,7 @@
 /home/elic/fmasson/module_load.txt: line 4: module: command not found
 /home/elic/fmasson/module_load.txt: line 5: module: command not found
 /home/elic/fmasson/module_load.txt: line 6: module: command not found
+./run.bash: line 5: module: command not found
 Traceback (most recent call last):
   File "/home/elic/fmasson/git/fmassonn.github.io/climate-indices/era5_temperature.py", line 44, in <module>
     import cdsapi
