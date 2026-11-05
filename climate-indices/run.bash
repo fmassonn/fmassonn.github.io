@@ -1,4 +1,5 @@
 #!/bin/bash
+source /etc/profile
 
 module purge
 source ~/module_load.txt
