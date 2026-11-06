@@ -1,5 +1,5 @@
 #!/bin/bash
-source /etc/profile
+source /etc/profile # to work from cron
 
 module purge
 source ~/module_load.txt
