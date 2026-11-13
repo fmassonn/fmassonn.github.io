@@ -10,23 +10,21 @@ The following modules were not unloaded:
 12:26:08 | INFO | Processing Bruxelles
 12:26:08 | INFO | ======================================================================
 12:26:08 | INFO | Reading ERA5 cache /home/elic/fmasson/git/fmassonn.github.io/climate-indices/data/ERA5_T2M_Bruxelles.parquet
-12:26:08 | INFO | Downloading ERA5 for Bruxelles: 2026-07-07 -> 2026-11-07
-2026-11-12 12:26:08,461 INFO [2026-10-06T00:00:00Z] **Data Stores Service protection measures** affecting data downloads and account access: [please read our Announcement](https://forum.ecmwf.int/t/data-stores-service-protection-measures-affecting-data-downloads-and-account-access-cds-ads-ewds-ecds/15481) before enquiring with ECMWF Support.
+12:26:08 | INFO | Downloading ERA5 for Bruxelles: 2026-07-07 -> 2026-11-08
+2026-11-13 12:26:08,484 INFO [2026-10-06T00:00:00Z] **Data Stores Service protection measures** affecting data downloads and account access: [please read our Announcement](https://forum.ecmwf.int/t/data-stores-service-protection-measures-affecting-data-downloads-and-account-access-cds-ads-ewds-ecds/15481) before enquiring with ECMWF Support.
 12:26:08 | INFO | [2026-10-06T00:00:00Z] **Data Stores Service protection measures** affecting data downloads and account access: [please read our Announcement](https://forum.ecmwf.int/t/data-stores-service-protection-measures-affecting-data-downloads-and-account-access-cds-ads-ewds-ecds/15481) before enquiring with ECMWF Support.
-2026-11-12 12:26:08,684 INFO Request ID is 285fea8f-ab62-4e1b-bcc9-4f1f46559840
-12:26:08 | INFO | Request ID is 285fea8f-ab62-4e1b-bcc9-4f1f46559840
-2026-11-12 12:26:08,744 INFO status has been updated to accepted
-12:26:08 | INFO | status has been updated to accepted
-2026-11-12 12:26:22,452 INFO status has been updated to running
-12:26:22 | INFO | status has been updated to running
-2026-11-12 12:26:30,110 INFO status has been updated to successful
+2026-11-13 12:26:08,701 INFO Request ID is 5375c156-67ab-4654-bb7b-255b8f3bb8f8
+12:26:08 | INFO | Request ID is 5375c156-67ab-4654-bb7b-255b8f3bb8f8
+2026-11-13 12:26:09,098 INFO status has been updated to accepted
+12:26:09 | INFO | status has been updated to accepted
+2026-11-13 12:26:30,228 INFO status has been updated to successful
 12:26:30 | INFO | status has been updated to successful
-12:26:30 | INFO | Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-11-12/ab1c264cad8154bb056d0eb738521d10.zip
+12:26:30 | INFO | Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-11-13/6b04d1a29b57d460049ad64cf2182245.zip
 Python executable: /opt/easybuild/soft/2025b/software/Python/3.13.5-GCCcore-14.3.0/bin/python3
 Python version: 3.13.5 (main, Jan  9 2026, 16:06:45) [GCC 14.3.0]
 Python path: ['/home/elic/fmasson/git/fmassonn.github.io/climate-indices', '/opt/easybuild/soft/2025b/software/matplotlib/3.10.5-gfbf-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/fonttools/4.58.5-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Tkinter/3.13.5-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/LLVM/20.1.8-GCCcore-14.3.0/lib/python', '/opt/easybuild/soft/2025b/software/ELIC_Python/1-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/basemap/2.0.0-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/statsmodels/0.14.6-gfbf-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/h5netcdf/1.7.3-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/h5py/3.14.0-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/geopandas/1.1.2-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/numba/0.62.0-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/scikit-learn/1.7.1-gfbf-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/networkx/3.5-gfbf-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/ESMPy/8.9.0-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/hatchling/1.27.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/plotly.py/6.5.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/zarr/3.1.5-gfbf-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Deprecated/1.3.1-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/wrapt/1.17.3-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/py-cpuinfo/9.0.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/dask/2025.9.1-gfbf-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/bokeh/3.7.3-gfbf-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Cartopy/0.25.0-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/pyproj/3.7.1-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Fiona/1.10.1-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Shapely/2.1.1-gfbf-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/netcdf4-python/1.7.2-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/mpi4py/4.1.0-gompi-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/jupyter-resource-usage/1.2.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/jupyterlmod/5.3.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/jupyter-server-proxy/4.4.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/aiohttp/3.12.15-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/nbclassic/1.3.3-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/JupyterNotebook/7.4.7-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/JupyterLab/4.4.9-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/jupyter-server/2.17.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/BeautifulSoup/4.14.2-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/PyZMQ/27.1.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/JupyterHub/5.4.2-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/PyYAML/6.0.2-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/pydantic/2.11.9-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/SQLAlchemy/2.0.41-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Mako/1.3.10-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/psycopg/3.2.9-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Greenlet/3.2.3-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/PycURL/7.45.7-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/tornado/6.5.1-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/bcrypt/4.3.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/IPython/9.4.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/jedi/0.19.2-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/lxml/6.0.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Z3/4.15.1-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/GDAL/3.11.3-foss-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Pillow/11.3.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/X11/20250608-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/SciPy-bundle/2025.07-gfbf-2025b/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Python-bundle-PyPI/2025.07-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/virtualenv/20.32.0-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/cryptography/45.0.5-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/cffi/1.17.1-GCCcore-14.3.0/lib/python3.13/site-packages', '/opt/easybuild/soft/2025b/software/Python/3.13.5-GCCcore-14.3.0/lib/python313.zip', '/opt/easybuild/soft/2025b/software/Python/3.13.5-GCCcore-14.3.0/lib/python3.13', '/opt/easybuild/soft/2025b/software/Python/3.13.5-GCCcore-14.3.0/lib/python3.13/lib-dynload', '/opt/easybuild/soft/2025b/software/Python/3.13.5-GCCcore-14.3.0/lib/python3.13/site-packages']
-ab1c264cad8154bb056d0eb738521d10.zip:   0%|          | 0.00/20.9k [00:00<?, ?B/s]ab1c264cad8154bb056d0eb738521d10.zip: 100%|██████████| 20.9k/20.9k [00:00<00:00, 151kB/s]                                                                                         12:26:30 | INFO | Reading ERA5 CSV: reanalysis-era5-single-levels-timeseries-sfcydzk84l9.csv
-12:26:31 | INFO | ERA5 cache contains 761280 hourly values (1940-01-01 00:00:00+00:00 -> 2026-11-04 23:00:00+00:00)
+6b04d1a29b57d460049ad64cf2182245.zip:   0%|          | 0.00/21.1k [00:00<?, ?B/s]6b04d1a29b57d460049ad64cf2182245.zip: 100%|██████████| 21.1k/21.1k [00:00<00:00, 155kB/s]                                                                                         12:26:30 | INFO | Reading ERA5 CSV: reanalysis-era5-single-levels-timeseries-sfce5fur7_p.csv
+12:26:31 | INFO | ERA5 cache contains 761304 hourly values (1940-01-01 00:00:00+00:00 -> 2026-11-05 23:00:00+00:00)
 12:26:31 | INFO | Computing daily statistics.
 12:26:31 | INFO | Downloading recent KMI/IRM observations for Uccle.
 12:26:31 | INFO | Adding 7 recent KMI observation days.
@@ -35,7 +33,7 @@ Python path: ['/home/elic/fmasson/git/fmassonn.github.io/climate-indices', '/opt
 12:26:36 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/output/hourly_T2M_Bruxelles.csv.gz
 12:26:36 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/output/daily_statistics_T2M_Bruxelles.csv
 12:26:36 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/climatology_Bruxelles.png
-12:26:36 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_last365d.png
+12:26:37 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_last365d.png
 12:26:37 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_MinMax_Bruxelles_last365d.png
 12:26:37 | INFO | Producing annual figure 1940
 12:26:37 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1940.png
@@ -108,14 +106,14 @@ Python path: ['/home/elic/fmasson/git/fmassonn.github.io/climate-indices', '/opt
 12:26:49 | INFO | Producing annual figure 1974
 12:26:49 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1974.png
 12:26:49 | INFO | Producing annual figure 1975
-12:26:50 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1975.png
-12:26:50 | INFO | Producing annual figure 1976
+12:26:49 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1975.png
+12:26:49 | INFO | Producing annual figure 1976
 12:26:50 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1976.png
 12:26:50 | INFO | Producing annual figure 1977
 12:26:50 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1977.png
 12:26:50 | INFO | Producing annual figure 1978
-12:26:51 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1978.png
-12:26:51 | INFO | Producing annual figure 1979
+12:26:50 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1978.png
+12:26:50 | INFO | Producing annual figure 1979
 12:26:51 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1979.png
 12:26:51 | INFO | Producing annual figure 1980
 12:26:51 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1980.png
@@ -158,8 +156,8 @@ Python path: ['/home/elic/fmasson/git/fmassonn.github.io/climate-indices', '/opt
 12:26:58 | INFO | Producing annual figure 1999
 12:26:58 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_1999.png
 12:26:58 | INFO | Producing annual figure 2000
-12:26:59 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2000.png
-12:26:59 | INFO | Producing annual figure 2001
+12:26:58 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2000.png
+12:26:58 | INFO | Producing annual figure 2001
 12:26:59 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2001.png
 12:26:59 | INFO | Producing annual figure 2002
 12:26:59 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2002.png
@@ -186,14 +184,14 @@ Python path: ['/home/elic/fmasson/git/fmassonn.github.io/climate-indices', '/opt
 12:27:03 | INFO | Producing annual figure 2013
 12:27:03 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2013.png
 12:27:03 | INFO | Producing annual figure 2014
-12:27:04 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2014.png
-12:27:04 | INFO | Producing annual figure 2015
+12:27:03 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2014.png
+12:27:03 | INFO | Producing annual figure 2015
 12:27:04 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2015.png
 12:27:04 | INFO | Producing annual figure 2016
 12:27:04 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2016.png
 12:27:04 | INFO | Producing annual figure 2017
-12:27:05 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2017.png
-12:27:05 | INFO | Producing annual figure 2018
+12:27:04 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2017.png
+12:27:04 | INFO | Producing annual figure 2018
 12:27:05 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2018.png
 12:27:05 | INFO | Producing annual figure 2019
 12:27:05 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2019.png
@@ -202,12 +200,12 @@ Python path: ['/home/elic/fmasson/git/fmassonn.github.io/climate-indices', '/opt
 12:27:06 | INFO | Producing annual figure 2021
 12:27:06 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2021.png
 12:27:06 | INFO | Producing annual figure 2022
-12:27:07 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2022.png
-12:27:07 | INFO | Producing annual figure 2023
+12:27:06 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2022.png
+12:27:06 | INFO | Producing annual figure 2023
 12:27:07 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2023.png
 12:27:07 | INFO | Producing annual figure 2024
 12:27:07 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2024.png
 12:27:07 | INFO | Producing annual figure 2025
-12:27:08 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2025.png
-12:27:08 | INFO | Producing annual figure 2026
+12:27:07 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2025.png
+12:27:07 | INFO | Producing annual figure 2026
 12:27:08 | INFO | Written /home/elic/fmasson/git/fmassonn.github.io/climate-indices/figures/T2M_Bruxelles_2026.png
